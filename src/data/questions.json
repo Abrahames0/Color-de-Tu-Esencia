@@ -1,0 +1,77 @@
+[
+  {
+      "id": 1,
+      "question": "¿Con qué frecuencia te sientes motivado para comenzar nuevas tareas?",
+      "options": ["Nunca", "Raramente", "A veces", "A menudo", "Siempre"]
+  },
+  {
+      "id": 2,
+      "question": "¿Con qué frecuencia te tomas un tiempo para relajarte y desconectar?",
+      "options": ["Nunca", "Raramente", "A veces", "A menudo", "Siempre"]
+  },
+  {
+      "id": 3,
+      "question": "¿Qué tan a menudo te sientes satisfecho con tus logros diarios?",
+      "options": ["Nunca", "Raramente", "A veces", "A menudo", "Siempre"]
+  },
+  {
+      "id": 4,
+      "question": "¿Con qué frecuencia buscas aprender algo nuevo?",
+      "options": ["Nunca", "Raramente", "A veces", "A menudo", "Siempre"]
+  },
+  {
+      "id": 5,
+      "question": "¿Qué tan seguido te sientes estresado por tus responsabilidades?",
+      "options": ["Nunca", "Raramente", "A veces", "A menudo", "Siempre"]
+  },
+  {
+      "id": 6,
+      "question": "¿Con qué frecuencia ayudas a los demás sin esperar nada a cambio?",
+      "options": ["Nunca", "Raramente", "A veces", "A menudo", "Siempre"]
+  },
+  {
+      "id": 7,
+      "question": "¿Qué tan a menudo te sientes seguro al tomar decisiones importantes?",
+      "options": ["Nunca", "Raramente", "A veces", "A menudo", "Siempre"]
+  },
+  {
+      "id": 8,
+      "question": "¿Con qué frecuencia participas en actividades físicas o deportivas?",
+      "options": ["Nunca", "Raramente", "A veces", "A menudo", "Siempre"]
+  },
+  {
+      "id": 9,
+      "question": "¿Qué tan seguido disfrutas de pasar tiempo con amigos y familiares?",
+      "options": ["Nunca", "Raramente", "A veces", "A menudo", "Siempre"]
+  },
+  {
+      "id": 10,
+      "question": "¿Con qué frecuencia te sientes agradecido por lo que tienes?",
+      "options": ["Nunca", "Raramente", "A veces", "A menudo", "Siempre"]
+  },
+  {
+      "id": 11,
+      "question": "¿Con qué frecuencia dedicas tiempo a tus pasatiempos o intereses personales?",
+      "options": ["Nunca", "Raramente", "A veces", "A menudo", "Siempre"]
+  },
+  {
+      "id": 12,
+      "question": "¿Qué tan a menudo te sientes inspirado por lo que haces?",
+      "options": ["Nunca", "Raramente", "A veces", "A menudo", "Siempre"]
+  },
+  {
+      "id": 13,
+      "question": "¿Con qué frecuencia te tomas un tiempo para reflexionar sobre tus metas y sueños?",
+      "options": ["Nunca", "Raramente", "A veces", "A menudo", "Siempre"]
+  },
+  {
+      "id": 14,
+      "question": "¿Qué tan seguido te comunicas abiertamente con los demás sobre tus sentimientos?",
+      "options": ["Nunca", "Raramente", "A veces", "A menudo", "Siempre"]
+  },
+  {
+      "id": 15,
+      "question": "¿Qué tan a menudo realizas de actividades creativas, como por ejemplo pintar, escribir o tocar un instrumento?",
+      "options": ["Nunca", "Raramente", "A veces", "A menudo", "Siempre"]
+  }
+]
