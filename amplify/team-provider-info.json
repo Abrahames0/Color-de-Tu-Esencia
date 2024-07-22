@@ -1,0 +1,15 @@
+{
+  "prod": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-elcolordetuesencia-prod-d37a0-authRole",
+      "UnauthRoleArn": "arn:aws:iam::388211918476:role/amplify-elcolordetuesencia-prod-d37a0-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::388211918476:role/amplify-elcolordetuesencia-prod-d37a0-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-elcolordetuesencia-prod-d37a0-deployment",
+      "UnauthRoleName": "amplify-elcolordetuesencia-prod-d37a0-unauthRole",
+      "StackName": "amplify-elcolordetuesencia-prod-d37a0",
+      "StackId": "arn:aws:cloudformation:us-east-1:388211918476:stack/amplify-elcolordetuesencia-prod-d37a0/edc55270-458a-11ef-97b3-1271dc0be93b",
+      "AmplifyAppId": "drscmnhjego5l"
+    }
+  }
+}
