@@ -10,10 +10,108 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "pregunta1": {
-                    "name": "pregunta1",
+                "motivacion": {
+                    "name": "motivacion",
                     "isArray": false,
-                    "type": "String",
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "relajacion": {
+                    "name": "relajacion",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "satisfacion": {
+                    "name": "satisfacion",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "aprendizaje": {
+                    "name": "aprendizaje",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "estres": {
+                    "name": "estres",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "ayuda": {
+                    "name": "ayuda",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "seguridad": {
+                    "name": "seguridad",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "actividadFisica": {
+                    "name": "actividadFisica",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "amistadFamilia": {
+                    "name": "amistadFamilia",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "gratitud": {
+                    "name": "gratitud",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "pasatiempos": {
+                    "name": "pasatiempos",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "inspitacion": {
+                    "name": "inspitacion",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "reflexion": {
+                    "name": "reflexion",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "comunicacion": {
+                    "name": "comunicacion",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "creatividad": {
+                    "name": "creatividad",
+                    "isArray": false,
+                    "type": "Int",
                     "isRequired": false,
                     "attributes": []
                 },
@@ -63,5 +161,5 @@ export const schema = {
     "enums": {},
     "nonModels": {},
     "codegenVersion": "3.4.4",
-    "version": "631199dc9d16ab5724bb717afacee7fe"
+    "version": "f73705a3b847a49cbef8da30c5919faf"
 };

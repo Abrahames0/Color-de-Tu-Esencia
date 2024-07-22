@@ -14,7 +14,7 @@ function StepContent({ step, answers, handleInputChange }) {
         {question.question}
       </Typography>
       <div className='mb-4' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <div className="dark:bg-gray-900 dark:text-white" style={{ width: '40%', height: '40%', textAlign: 'center', border: '1px black solid' }}></div>
+        <div style={{color: '#e05beb' ,width: '40%', height: '40%', textAlign: 'center', border: '1px black solid' }}></div>
       </div>
       {question.options.length > 0 ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}>
@@ -102,11 +102,7 @@ function StepperTest() {
       </div>
       {!completed && (
         <div className="flex justify-center space-x-4 mt-2">
-          <button
-            disabled={activeStep === 0}
-            onClick={handleBack}
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-full disabled:opacity-50"
-          >
+          <button disabled={activeStep === 0} onClick={handleBack} className="px-4 py-2 bg-gray-300 text-gray-700 rounded-full disabled:opacity-50">
             Atrás
           </button>
           <button onClick={handleNext} className="px-4 py-2 text-white back-main rounded-full hover:bg-pink-400 active:bg-pink-500 transition-all">

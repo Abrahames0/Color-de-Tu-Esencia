@@ -1,4 +1,19 @@
 type Preguntas @model @auth(rules: [{allow: public}]) {
   id: ID!
-  pregunta1: String
+  motivacion: Int
+  relajacion: Int
+  satisfacion: Int
+  aprendizaje: Int
+  estres: Int
+  ayuda: Int
+  seguridad: Int
+  actividadFisica: Int
+  amistadFamilia: Int
+  gratitud: Int
+  pasatiempos: Int
+  inspitacion: Int
+  reflexion: Int
+  comunicacion: Int
+  creatividad: Int
 }
+ 
