@@ -15,4 +15,5 @@ const Gracias = () => {
   )
 }
 
+
 export default Gracias;
