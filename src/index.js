@@ -11,6 +11,7 @@ import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Inicio from "./pages/Inicio";
 import Encuesta from "./pages/Encuesta";
+import Resultado from "./pages/Resultado";
 
 Amplify.configure(awsExports);
 
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
   {
     path: "/encuesta",
     element: <Encuesta/>
+  },
+  {
+    path: "/resultado",
+    element: <Resultado/>
   }
 ]);
 

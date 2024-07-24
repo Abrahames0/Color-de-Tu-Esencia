@@ -8,7 +8,7 @@ module.exports = {
         itim: ['"Itim-Regular"', 'Helvetica'],
       },
       colors: {
-        customColor: '#F5DDF7',
+        customColor: '#e6e6fa',
       },
     },
   },
