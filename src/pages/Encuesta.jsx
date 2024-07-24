@@ -10,9 +10,9 @@ function MainContent() {
 
   return (
     <div className="relative">
-      <div className="absolute inset-0 z-0">
+      {/* <div className="absolute inset-0 z-0">
         <Cofeti />
-      </div>
+      </div> */}
       <div className="relative z-10">
         <Navbar toggleDarkMode={toggleDarkMode} darkMode={darkMode} />
         <main className="dark:bg-gray-900 dark:text-white">

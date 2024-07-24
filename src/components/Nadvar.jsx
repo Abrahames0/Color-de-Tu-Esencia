@@ -1,7 +1,7 @@
 // Navbar.js
 import React from 'react';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
-import Logo from "../assets/img/Logo 1.png";
+import Logo from "../assets/img/Logo.png";
 import { FaBars, FaRegCircleXmark } from "react-icons/fa6";
 import { MdOutlineWbSunny, } from 'react-icons/md';
 import { FaMoon } from "react-icons/fa";
