@@ -2,7 +2,7 @@ type Preguntas @model @auth(rules: [{allow: public}]) {
   id: ID!
   motivacion: Int
   relajacion: Int
-  satisfacion: Int
+  satisfaccion: Int
   aprendizaje: Int
   estres: Int
   ayuda: Int
@@ -11,9 +11,8 @@ type Preguntas @model @auth(rules: [{allow: public}]) {
   amistadFamilia: Int
   gratitud: Int
   pasatiempos: Int
-  inspitacion: Int
+  inspiracion: Int
   reflexion: Int
   comunicacion: Int
   creatividad: Int
-}
- 
+} 

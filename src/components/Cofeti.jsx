@@ -2,7 +2,7 @@ import React from 'react';
 
 const Cofeti = () => {
   return (
-    <div className="absolute transition-all z-0 w-full h-screen">
+    <div className="absolute inset-0 z-0 transition-all w-full h-screen">
       <div className="relative z-0 w-[60px] h-[60px] bg-[#e05beb] rounded-full left-[10%] top-[15%]" />
       <div className="relative z-0 w-[60px] h-[60px] bg-[#935CEC] rounded-full left-[30%] top-[30%]" />
       <div className="relative z-0 w-[60px] h-[60px] bg-[#FB0606] rounded-full left-[20%] top-[55%]" />

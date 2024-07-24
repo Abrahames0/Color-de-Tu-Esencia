@@ -14,7 +14,7 @@ type EagerPreguntas = {
   readonly id: string;
   readonly motivacion?: number | null;
   readonly relajacion?: number | null;
-  readonly satisfacion?: number | null;
+  readonly satisfaccion?: number | null;
   readonly aprendizaje?: number | null;
   readonly estres?: number | null;
   readonly ayuda?: number | null;
@@ -23,7 +23,7 @@ type EagerPreguntas = {
   readonly amistadFamilia?: number | null;
   readonly gratitud?: number | null;
   readonly pasatiempos?: number | null;
-  readonly inspitacion?: number | null;
+  readonly inspiracion?: number | null;
   readonly reflexion?: number | null;
   readonly comunicacion?: number | null;
   readonly creatividad?: number | null;
@@ -39,7 +39,7 @@ type LazyPreguntas = {
   readonly id: string;
   readonly motivacion?: number | null;
   readonly relajacion?: number | null;
-  readonly satisfacion?: number | null;
+  readonly satisfaccion?: number | null;
   readonly aprendizaje?: number | null;
   readonly estres?: number | null;
   readonly ayuda?: number | null;
@@ -48,7 +48,7 @@ type LazyPreguntas = {
   readonly amistadFamilia?: number | null;
   readonly gratitud?: number | null;
   readonly pasatiempos?: number | null;
-  readonly inspitacion?: number | null;
+  readonly inspiracion?: number | null;
   readonly reflexion?: number | null;
   readonly comunicacion?: number | null;
   readonly creatividad?: number | null;

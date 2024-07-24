@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import questions from '../data/questions.json';
 import { TextField, Typography } from '@mui/material';
 import { Button, ProgressBar } from 'react-bootstrap';
+import Resultado from '../pages/Resultado';
 
 function StepContent({ step, answers, handleInputChange }) {
   const question = questions[step];
@@ -90,12 +91,7 @@ function StepperTest() {
       </div>
       <div className="mb-5">
         {completed ? (
-          <div>
-            <p className="text-xl font-semibold">Todos los pasos completados</p>
-            <p className="mb-4">Respuestas:</p>
-            <pre className="text-left">{JSON.stringify(answers, null, 2)}</pre>
-            <button onClick={handleReset} className="mt-4 px-4 py-2 back-main rounded-full hover:bg-pink-400 active:bg-pink-500 transition-all">Reiniciar</button>
-          </div>
+          <Resultado answers={answers} handleReset={handleReset}/>
         ) : (
           <StepContent step={activeStep} answers={answers} handleInputChange={handleInputChange} />
         )}

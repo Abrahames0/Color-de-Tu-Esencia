@@ -24,8 +24,8 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "satisfacion": {
-                    "name": "satisfacion",
+                "satisfaccion": {
+                    "name": "satisfaccion",
                     "isArray": false,
                     "type": "Int",
                     "isRequired": false,
@@ -87,8 +87,8 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "inspitacion": {
-                    "name": "inspitacion",
+                "inspiracion": {
+                    "name": "inspiracion",
                     "isArray": false,
                     "type": "Int",
                     "isRequired": false,
@@ -161,5 +161,5 @@ export const schema = {
     "enums": {},
     "nonModels": {},
     "codegenVersion": "3.4.4",
-    "version": "f73705a3b847a49cbef8da30c5919faf"
+    "version": "3e1c117c864a959ac33bb82fa7218fbf"
 };

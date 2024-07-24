@@ -24,7 +24,7 @@ export declare type ValidationFunction<T> = (value: T, validationResponse: Valid
 export declare type PreguntasCreateFormInputValues = {
     motivacion?: number;
     relajacion?: number;
-    satisfacion?: number;
+    satisfaccion?: number;
     aprendizaje?: number;
     estres?: number;
     ayuda?: number;
@@ -33,7 +33,7 @@ export declare type PreguntasCreateFormInputValues = {
     amistadFamilia?: number;
     gratitud?: number;
     pasatiempos?: number;
-    inspitacion?: number;
+    inspiracion?: number;
     reflexion?: number;
     comunicacion?: number;
     creatividad?: number;
@@ -41,7 +41,7 @@ export declare type PreguntasCreateFormInputValues = {
 export declare type PreguntasCreateFormValidationValues = {
     motivacion?: ValidationFunction<number>;
     relajacion?: ValidationFunction<number>;
-    satisfacion?: ValidationFunction<number>;
+    satisfaccion?: ValidationFunction<number>;
     aprendizaje?: ValidationFunction<number>;
     estres?: ValidationFunction<number>;
     ayuda?: ValidationFunction<number>;
@@ -50,7 +50,7 @@ export declare type PreguntasCreateFormValidationValues = {
     amistadFamilia?: ValidationFunction<number>;
     gratitud?: ValidationFunction<number>;
     pasatiempos?: ValidationFunction<number>;
-    inspitacion?: ValidationFunction<number>;
+    inspiracion?: ValidationFunction<number>;
     reflexion?: ValidationFunction<number>;
     comunicacion?: ValidationFunction<number>;
     creatividad?: ValidationFunction<number>;
@@ -60,7 +60,7 @@ export declare type PreguntasCreateFormOverridesProps = {
     PreguntasCreateFormGrid?: PrimitiveOverrideProps<GridProps>;
     motivacion?: PrimitiveOverrideProps<TextFieldProps>;
     relajacion?: PrimitiveOverrideProps<TextFieldProps>;
-    satisfacion?: PrimitiveOverrideProps<TextFieldProps>;
+    satisfaccion?: PrimitiveOverrideProps<TextFieldProps>;
     aprendizaje?: PrimitiveOverrideProps<TextFieldProps>;
     estres?: PrimitiveOverrideProps<TextFieldProps>;
     ayuda?: PrimitiveOverrideProps<TextFieldProps>;
@@ -69,7 +69,7 @@ export declare type PreguntasCreateFormOverridesProps = {
     amistadFamilia?: PrimitiveOverrideProps<TextFieldProps>;
     gratitud?: PrimitiveOverrideProps<TextFieldProps>;
     pasatiempos?: PrimitiveOverrideProps<TextFieldProps>;
-    inspitacion?: PrimitiveOverrideProps<TextFieldProps>;
+    inspiracion?: PrimitiveOverrideProps<TextFieldProps>;
     reflexion?: PrimitiveOverrideProps<TextFieldProps>;
     comunicacion?: PrimitiveOverrideProps<TextFieldProps>;
     creatividad?: PrimitiveOverrideProps<TextFieldProps>;

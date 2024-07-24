@@ -3,11 +3,16 @@ import ReactDOM from "react-dom/client";
 
 import "./index.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+//AWS AMPLIFY
+import { Amplify } from "aws-amplify";
+import awsExports from './aws-exports';
+//
 import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Inicio from "./pages/Inicio";
 import Encuesta from "./pages/Encuesta";
+
+Amplify.configure(awsExports);
 
 const router = createBrowserRouter([
   {

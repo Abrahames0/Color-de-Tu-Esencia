@@ -25,7 +25,7 @@ export default function PreguntasUpdateForm(props) {
   const initialValues = {
     motivacion: "",
     relajacion: "",
-    satisfacion: "",
+    satisfaccion: "",
     aprendizaje: "",
     estres: "",
     ayuda: "",
@@ -34,15 +34,15 @@ export default function PreguntasUpdateForm(props) {
     amistadFamilia: "",
     gratitud: "",
     pasatiempos: "",
-    inspitacion: "",
+    inspiracion: "",
     reflexion: "",
     comunicacion: "",
     creatividad: "",
   };
   const [motivacion, setMotivacion] = React.useState(initialValues.motivacion);
   const [relajacion, setRelajacion] = React.useState(initialValues.relajacion);
-  const [satisfacion, setSatisfacion] = React.useState(
-    initialValues.satisfacion
+  const [satisfaccion, setSatisfaccion] = React.useState(
+    initialValues.satisfaccion
   );
   const [aprendizaje, setAprendizaje] = React.useState(
     initialValues.aprendizaje
@@ -60,8 +60,8 @@ export default function PreguntasUpdateForm(props) {
   const [pasatiempos, setPasatiempos] = React.useState(
     initialValues.pasatiempos
   );
-  const [inspitacion, setInspitacion] = React.useState(
-    initialValues.inspitacion
+  const [inspiracion, setInspiracion] = React.useState(
+    initialValues.inspiracion
   );
   const [reflexion, setReflexion] = React.useState(initialValues.reflexion);
   const [comunicacion, setComunicacion] = React.useState(
@@ -77,7 +77,7 @@ export default function PreguntasUpdateForm(props) {
       : initialValues;
     setMotivacion(cleanValues.motivacion);
     setRelajacion(cleanValues.relajacion);
-    setSatisfacion(cleanValues.satisfacion);
+    setSatisfaccion(cleanValues.satisfaccion);
     setAprendizaje(cleanValues.aprendizaje);
     setEstres(cleanValues.estres);
     setAyuda(cleanValues.ayuda);
@@ -86,7 +86,7 @@ export default function PreguntasUpdateForm(props) {
     setAmistadFamilia(cleanValues.amistadFamilia);
     setGratitud(cleanValues.gratitud);
     setPasatiempos(cleanValues.pasatiempos);
-    setInspitacion(cleanValues.inspitacion);
+    setInspiracion(cleanValues.inspiracion);
     setReflexion(cleanValues.reflexion);
     setComunicacion(cleanValues.comunicacion);
     setCreatividad(cleanValues.creatividad);
@@ -107,7 +107,7 @@ export default function PreguntasUpdateForm(props) {
   const validations = {
     motivacion: [],
     relajacion: [],
-    satisfacion: [],
+    satisfaccion: [],
     aprendizaje: [],
     estres: [],
     ayuda: [],
@@ -116,7 +116,7 @@ export default function PreguntasUpdateForm(props) {
     amistadFamilia: [],
     gratitud: [],
     pasatiempos: [],
-    inspitacion: [],
+    inspiracion: [],
     reflexion: [],
     comunicacion: [],
     creatividad: [],
@@ -149,7 +149,7 @@ export default function PreguntasUpdateForm(props) {
         let modelFields = {
           motivacion,
           relajacion,
-          satisfacion,
+          satisfaccion,
           aprendizaje,
           estres,
           ayuda,
@@ -158,7 +158,7 @@ export default function PreguntasUpdateForm(props) {
           amistadFamilia,
           gratitud,
           pasatiempos,
-          inspitacion,
+          inspiracion,
           reflexion,
           comunicacion,
           creatividad,
@@ -223,7 +223,7 @@ export default function PreguntasUpdateForm(props) {
             const modelFields = {
               motivacion: value,
               relajacion,
-              satisfacion,
+              satisfaccion,
               aprendizaje,
               estres,
               ayuda,
@@ -232,7 +232,7 @@ export default function PreguntasUpdateForm(props) {
               amistadFamilia,
               gratitud,
               pasatiempos,
-              inspitacion,
+              inspiracion,
               reflexion,
               comunicacion,
               creatividad,
@@ -265,7 +265,7 @@ export default function PreguntasUpdateForm(props) {
             const modelFields = {
               motivacion,
               relajacion: value,
-              satisfacion,
+              satisfaccion,
               aprendizaje,
               estres,
               ayuda,
@@ -274,7 +274,7 @@ export default function PreguntasUpdateForm(props) {
               amistadFamilia,
               gratitud,
               pasatiempos,
-              inspitacion,
+              inspiracion,
               reflexion,
               comunicacion,
               creatividad,
@@ -293,12 +293,12 @@ export default function PreguntasUpdateForm(props) {
         {...getOverrideProps(overrides, "relajacion")}
       ></TextField>
       <TextField
-        label="Satisfacion"
+        label="Satisfaccion"
         isRequired={false}
         isReadOnly={false}
         type="number"
         step="any"
-        value={satisfacion}
+        value={satisfaccion}
         onChange={(e) => {
           let value = isNaN(parseInt(e.target.value))
             ? e.target.value
@@ -307,7 +307,7 @@ export default function PreguntasUpdateForm(props) {
             const modelFields = {
               motivacion,
               relajacion,
-              satisfacion: value,
+              satisfaccion: value,
               aprendizaje,
               estres,
               ayuda,
@@ -316,23 +316,23 @@ export default function PreguntasUpdateForm(props) {
               amistadFamilia,
               gratitud,
               pasatiempos,
-              inspitacion,
+              inspiracion,
               reflexion,
               comunicacion,
               creatividad,
             };
             const result = onChange(modelFields);
-            value = result?.satisfacion ?? value;
+            value = result?.satisfaccion ?? value;
           }
-          if (errors.satisfacion?.hasError) {
-            runValidationTasks("satisfacion", value);
+          if (errors.satisfaccion?.hasError) {
+            runValidationTasks("satisfaccion", value);
           }
-          setSatisfacion(value);
+          setSatisfaccion(value);
         }}
-        onBlur={() => runValidationTasks("satisfacion", satisfacion)}
-        errorMessage={errors.satisfacion?.errorMessage}
-        hasError={errors.satisfacion?.hasError}
-        {...getOverrideProps(overrides, "satisfacion")}
+        onBlur={() => runValidationTasks("satisfaccion", satisfaccion)}
+        errorMessage={errors.satisfaccion?.errorMessage}
+        hasError={errors.satisfaccion?.hasError}
+        {...getOverrideProps(overrides, "satisfaccion")}
       ></TextField>
       <TextField
         label="Aprendizaje"
@@ -349,7 +349,7 @@ export default function PreguntasUpdateForm(props) {
             const modelFields = {
               motivacion,
               relajacion,
-              satisfacion,
+              satisfaccion,
               aprendizaje: value,
               estres,
               ayuda,
@@ -358,7 +358,7 @@ export default function PreguntasUpdateForm(props) {
               amistadFamilia,
               gratitud,
               pasatiempos,
-              inspitacion,
+              inspiracion,
               reflexion,
               comunicacion,
               creatividad,
@@ -391,7 +391,7 @@ export default function PreguntasUpdateForm(props) {
             const modelFields = {
               motivacion,
               relajacion,
-              satisfacion,
+              satisfaccion,
               aprendizaje,
               estres: value,
               ayuda,
@@ -400,7 +400,7 @@ export default function PreguntasUpdateForm(props) {
               amistadFamilia,
               gratitud,
               pasatiempos,
-              inspitacion,
+              inspiracion,
               reflexion,
               comunicacion,
               creatividad,
@@ -433,7 +433,7 @@ export default function PreguntasUpdateForm(props) {
             const modelFields = {
               motivacion,
               relajacion,
-              satisfacion,
+              satisfaccion,
               aprendizaje,
               estres,
               ayuda: value,
@@ -442,7 +442,7 @@ export default function PreguntasUpdateForm(props) {
               amistadFamilia,
               gratitud,
               pasatiempos,
-              inspitacion,
+              inspiracion,
               reflexion,
               comunicacion,
               creatividad,
@@ -475,7 +475,7 @@ export default function PreguntasUpdateForm(props) {
             const modelFields = {
               motivacion,
               relajacion,
-              satisfacion,
+              satisfaccion,
               aprendizaje,
               estres,
               ayuda,
@@ -484,7 +484,7 @@ export default function PreguntasUpdateForm(props) {
               amistadFamilia,
               gratitud,
               pasatiempos,
-              inspitacion,
+              inspiracion,
               reflexion,
               comunicacion,
               creatividad,
@@ -517,7 +517,7 @@ export default function PreguntasUpdateForm(props) {
             const modelFields = {
               motivacion,
               relajacion,
-              satisfacion,
+              satisfaccion,
               aprendizaje,
               estres,
               ayuda,
@@ -526,7 +526,7 @@ export default function PreguntasUpdateForm(props) {
               amistadFamilia,
               gratitud,
               pasatiempos,
-              inspitacion,
+              inspiracion,
               reflexion,
               comunicacion,
               creatividad,
@@ -559,7 +559,7 @@ export default function PreguntasUpdateForm(props) {
             const modelFields = {
               motivacion,
               relajacion,
-              satisfacion,
+              satisfaccion,
               aprendizaje,
               estres,
               ayuda,
@@ -568,7 +568,7 @@ export default function PreguntasUpdateForm(props) {
               amistadFamilia: value,
               gratitud,
               pasatiempos,
-              inspitacion,
+              inspiracion,
               reflexion,
               comunicacion,
               creatividad,
@@ -601,7 +601,7 @@ export default function PreguntasUpdateForm(props) {
             const modelFields = {
               motivacion,
               relajacion,
-              satisfacion,
+              satisfaccion,
               aprendizaje,
               estres,
               ayuda,
@@ -610,7 +610,7 @@ export default function PreguntasUpdateForm(props) {
               amistadFamilia,
               gratitud: value,
               pasatiempos,
-              inspitacion,
+              inspiracion,
               reflexion,
               comunicacion,
               creatividad,
@@ -643,7 +643,7 @@ export default function PreguntasUpdateForm(props) {
             const modelFields = {
               motivacion,
               relajacion,
-              satisfacion,
+              satisfaccion,
               aprendizaje,
               estres,
               ayuda,
@@ -652,7 +652,7 @@ export default function PreguntasUpdateForm(props) {
               amistadFamilia,
               gratitud,
               pasatiempos: value,
-              inspitacion,
+              inspiracion,
               reflexion,
               comunicacion,
               creatividad,
@@ -671,12 +671,12 @@ export default function PreguntasUpdateForm(props) {
         {...getOverrideProps(overrides, "pasatiempos")}
       ></TextField>
       <TextField
-        label="Inspitacion"
+        label="Inspiracion"
         isRequired={false}
         isReadOnly={false}
         type="number"
         step="any"
-        value={inspitacion}
+        value={inspiracion}
         onChange={(e) => {
           let value = isNaN(parseInt(e.target.value))
             ? e.target.value
@@ -685,7 +685,7 @@ export default function PreguntasUpdateForm(props) {
             const modelFields = {
               motivacion,
               relajacion,
-              satisfacion,
+              satisfaccion,
               aprendizaje,
               estres,
               ayuda,
@@ -694,23 +694,23 @@ export default function PreguntasUpdateForm(props) {
               amistadFamilia,
               gratitud,
               pasatiempos,
-              inspitacion: value,
+              inspiracion: value,
               reflexion,
               comunicacion,
               creatividad,
             };
             const result = onChange(modelFields);
-            value = result?.inspitacion ?? value;
+            value = result?.inspiracion ?? value;
           }
-          if (errors.inspitacion?.hasError) {
-            runValidationTasks("inspitacion", value);
+          if (errors.inspiracion?.hasError) {
+            runValidationTasks("inspiracion", value);
           }
-          setInspitacion(value);
+          setInspiracion(value);
         }}
-        onBlur={() => runValidationTasks("inspitacion", inspitacion)}
-        errorMessage={errors.inspitacion?.errorMessage}
-        hasError={errors.inspitacion?.hasError}
-        {...getOverrideProps(overrides, "inspitacion")}
+        onBlur={() => runValidationTasks("inspiracion", inspiracion)}
+        errorMessage={errors.inspiracion?.errorMessage}
+        hasError={errors.inspiracion?.hasError}
+        {...getOverrideProps(overrides, "inspiracion")}
       ></TextField>
       <TextField
         label="Reflexion"
@@ -727,7 +727,7 @@ export default function PreguntasUpdateForm(props) {
             const modelFields = {
               motivacion,
               relajacion,
-              satisfacion,
+              satisfaccion,
               aprendizaje,
               estres,
               ayuda,
@@ -736,7 +736,7 @@ export default function PreguntasUpdateForm(props) {
               amistadFamilia,
               gratitud,
               pasatiempos,
-              inspitacion,
+              inspiracion,
               reflexion: value,
               comunicacion,
               creatividad,
@@ -769,7 +769,7 @@ export default function PreguntasUpdateForm(props) {
             const modelFields = {
               motivacion,
               relajacion,
-              satisfacion,
+              satisfaccion,
               aprendizaje,
               estres,
               ayuda,
@@ -778,7 +778,7 @@ export default function PreguntasUpdateForm(props) {
               amistadFamilia,
               gratitud,
               pasatiempos,
-              inspitacion,
+              inspiracion,
               reflexion,
               comunicacion: value,
               creatividad,
@@ -811,7 +811,7 @@ export default function PreguntasUpdateForm(props) {
             const modelFields = {
               motivacion,
               relajacion,
-              satisfacion,
+              satisfaccion,
               aprendizaje,
               estres,
               ayuda,
@@ -820,7 +820,7 @@ export default function PreguntasUpdateForm(props) {
               amistadFamilia,
               gratitud,
               pasatiempos,
-              inspitacion,
+              inspiracion,
               reflexion,
               comunicacion,
               creatividad: value,

@@ -1,11 +1,13 @@
 [
   {
       "id": 1,
+      "tipo": "motivacion",
       "question": "¿Con qué frecuencia te sientes motivado para comenzar nuevas tareas?",
       "options": ["Nunca", "Raramente", "A veces", "A menudo", "Siempre"]
   },
   {
       "id": 2,
+      "tipo": "relajacion",
       "question": "¿Con qué frecuencia te tomas un tiempo para relajarte y desconectar?",
       "options": ["Nunca", "Raramente", "A veces", "A menudo", "Siempre"]
   },
