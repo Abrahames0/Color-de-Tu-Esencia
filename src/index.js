@@ -12,6 +12,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Inicio from "./pages/Inicio";
 import Encuesta from "./pages/Encuesta";
 import Resultado from "./pages/Resultado";
+import TestForm from "./pages/TestForm";
 
 Amplify.configure(awsExports);
 
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
   {
     path: "/resultado",
     element: <Resultado/>
+  },
+  {
+    path: "/test",
+    element: <TestForm/>
   }
 ]);
 
