@@ -1,7 +1,8 @@
 import os
 import pandas as pd
 import numpy as np
-from flask import Flask, request, jsonify
+import joblib  # Asegúrate de importar joblib
+from flask import Flask, request, jsonify, send_file
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
 from sklearn.cluster import KMeans
@@ -10,14 +11,19 @@ from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
-import pdfkit
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning, module='matplotlib')
 
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
 app.config['UPLOAD_FOLDER'] = 'uploads/'
+app.config['MODEL_FOLDER'] = 'models/'
 app.config['ALLOWED_EXTENSIONS'] = {'csv'}
+
+if not os.path.exists(app.config['MODEL_FOLDER']):
+    os.makedirs(app.config['MODEL_FOLDER'])
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
@@ -47,25 +53,6 @@ def entrenar_modelo(filepath, num_clusters=9, num_iteraciones=50):
 
     return df, kmeans, scaler
 
-def probar_modelo(filepath, num_clusters=9, num_iteraciones=50, k_max=10):
-    df = leer_datos(filepath)
-    df_numeric = df.select_dtypes(include=[np.number])
-    df_numeric.fillna(df_numeric.mean(), inplace=True)
-
-    scaler = StandardScaler()
-    df_escalado = scaler.fit_transform(df_numeric)
-
-    kmeans = KMeans(n_clusters=num_clusters, max_iter=num_iteraciones, random_state=42)
-    kmeans.fit(df_escalado)
-
-    df['Cluster'] = kmeans.labels_
-    elbow_image = plot_elbow_method(df_escalado, k_max)
-    pca_image = visualizar_clusters(df)
-
-    # Convert the dataframe to a list of dictionaries for JSON response
-    clustered_data = df.to_dict(orient='records')
-
-    return df, kmeans, scaler, elbow_image, pca_image, clustered_data
 
 def plot_elbow_method(data, k_max):
     wcss = []
@@ -98,6 +85,55 @@ def visualizar_clusters(df):
     plt.close()
     return base64.b64encode(buf.getvalue()).decode('utf-8')
 
+
+
+
+def probar_modelo(filepath, num_clusters=9, num_iteraciones=50, k_max=10):
+    df = leer_datos(filepath)
+    df_numeric = df.select_dtypes(include=[np.number])
+    df_numeric.fillna(df_numeric.mean(), inplace=True)
+
+    scaler = StandardScaler()
+    df_escalado = scaler.fit_transform(df_numeric)
+
+    kmeans = KMeans(n_clusters=num_clusters, max_iter=num_iteraciones, random_state=42)
+    kmeans.fit(df_escalado)
+
+    df['Cluster'] = kmeans.labels_
+    elbow_image = plot_elbow_method(df_escalado, k_max)
+    pca_image = visualizar_clusters(df)
+
+    # Guardar el modelo
+    model_filename = os.path.join(app.config['MODEL_FOLDER'], 'kmeans_model.pkl')
+    joblib.dump(kmeans, model_filename)
+
+    clustered_data = df.to_dict(orient='records')
+
+    return df, kmeans, scaler, elbow_image, pca_image, clustered_data, model_filename
+
+
+@app.route('/generate_model', methods=['POST'])
+def generate_model():
+    if 'file' not in request.files or 'k_max' not in request.form:
+        return jsonify({'error': 'Missing file or k_max parameter'}), 400
+    file = request.files['file']
+    k_max = int(request.form['k_max'])
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+        
+        df, kmeans, scaler, elbow_image, pca_image, clustered_data, model_filename = probar_modelo(filepath, num_clusters=k_max, k_max=k_max)
+
+        return jsonify({'message': 'Model generated successfully', 'model_filename': model_filename})
+    else:
+        return jsonify({'error': 'Unsupported file format'}), 400
+
+
+
+
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
@@ -125,11 +161,18 @@ def test_k():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
         
-        df, kmeans, scaler, elbow_image, pca_image, clustered_data = probar_modelo(filepath, num_clusters=k_max, k_max=k_max)
+        df, kmeans, scaler, elbow_image, pca_image, clustered_data, model_filename = probar_modelo(filepath, num_clusters=k_max, k_max=k_max)
 
-        return jsonify({'elbow': elbow_image, 'pca': pca_image, 'clustered_data': clustered_data})
+        return jsonify({'elbow': elbow_image, 'pca': pca_image, 'clustered_data': clustered_data, 'model_filename': os.path.basename(model_filename)})
     else:
         return jsonify({'error': 'Unsupported file format'}), 400
+
+@app.route('/send_model', methods=['GET'])
+def send_model():
+    model_filename = request.args.get('model_filename')
+    if model_filename and os.path.exists(os.path.join(app.config['MODEL_FOLDER'], model_filename)):
+        return send_file(os.path.join(app.config['MODEL_FOLDER'], model_filename), as_attachment=True)
+    return jsonify({'error': 'Model file not found'}), 404
 
 if __name__ == '__main__':
     app.run(debug=True)

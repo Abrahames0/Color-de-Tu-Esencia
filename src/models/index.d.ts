@@ -6,6 +6,34 @@ import { LazyLoading, LazyLoadingDisabled } from "@aws-amplify/datastore";
 
 
 
+type EagerModelos = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Modelos, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly Modelurl?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyModelos = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Modelos, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly Modelurl?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Modelos = LazyLoading extends LazyLoadingDisabled ? EagerModelos : LazyModelos
+
+export declare const Modelos: (new (init: ModelInit<Modelos>) => Modelos) & {
+  copyOf(source: Modelos, mutator: (draft: MutableModel<Modelos>) => MutableModel<Modelos> | void): Modelos;
+}
+
 type EagerPreguntas = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<Preguntas, 'id'>;

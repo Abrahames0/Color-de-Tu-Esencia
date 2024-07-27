@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import * as XLSX from 'xlsx';
+import { uploadData } from 'aws-amplify/storage'; // Asegúrate de que aws-amplify esté correctamente configurado
+import { DataStore } from '@aws-amplify/datastore';
+import { Modelos } from '../models';
 
 function TestForm() {
     const [file, setFile] = useState(null);
@@ -10,7 +13,8 @@ function TestForm() {
     const [pcaImage, setPcaImage] = useState('');
     const [uploadMessage, setUploadMessage] = useState('');
     const [clusteredData, setClusteredData] = useState([]);
-
+    const [modelUrl, setModelUrl] = useState('');
+    const [modelFilename, setModelFilename] = useState('');
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
     };
@@ -45,7 +49,8 @@ function TestForm() {
             const data = await response.json();
             setElbowImage(data.elbow);
             setPcaImage(data.pca);
-            setClusteredData(data.clustered_data); // Receives clustered data
+            setClusteredData(data.clustered_data); 
+            setModelUrl(data.model_url); // Usando `model_url` para la URL del modelo
             setUploadMessage('File uploaded and processed successfully');
         } catch (error) {
             console.error('Error uploading file:', error);
@@ -54,14 +59,12 @@ function TestForm() {
     };
 
     const handleDownloadPDF = () => {
-        const doc = new jsPDF('portrait'); // Start with portrait orientation
+        const doc = new jsPDF('portrait');
         doc.text('Cluster Analysis Report', 10, 10);
-        doc.addImage(elbowImage, 'PNG', 10, 20, 180, 100); // Add elbow image
-        doc.addImage(pcaImage, 'PNG', 10, 130, 180, 100); // Add PCA image
+        doc.addImage(elbowImage, 'PNG', 10, 20, 180, 100);
+        doc.addImage(pcaImage, 'PNG', 10, 130, 180, 100);
 
-        // New page for the table in landscape orientation
         doc.addPage('landscape');
-
         if (clusteredData.length > 0) {
             const headers = Object.keys(clusteredData[0]);
             const data = clusteredData.map(row => Object.values(row));
@@ -72,10 +75,9 @@ function TestForm() {
                 startY: 20,
                 theme: 'grid',
                 headStyles: { fillColor: [0, 0, 0] },
-                styles: { fontSize: 8, cellPadding: 1 }, // Smaller font and reduced padding
+                styles: { fontSize: 8, cellPadding: 1 },
                 columnStyles: {
-                    0: { cellWidth: 'wrap' }, // Adjust the width for the first column
-                    // Add more column styles as needed
+                    0: { cellWidth: 'wrap' },
                 },
                 margin: { top: 20, right: 10, bottom: 20, left: 10 },
                 tableWidth: 'wrap',
@@ -87,13 +89,57 @@ function TestForm() {
 
     const handleDownloadExcel = () => {
         if (clusteredData.length > 0) {
-            // Convert data to a worksheet
             const ws = XLSX.utils.json_to_sheet(clusteredData);
-            // Create a new workbook and append the worksheet
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Clusters');
-            // Generate Excel file and trigger download
             XLSX.writeFile(wb, 'Cluster_Data.xlsx');
+        }
+    };
+
+    const handleUploadToS3 = async () => {
+        if (modelFilename) {
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/send_model?model_filename=${modelFilename}`);
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const filename = modelFilename.split('/').pop();
+
+                    try {
+                        const result = await uploadData({
+                            key: filename,
+                            data: blob
+                        });
+                        console.log('Succeeded: ', result);
+
+                        // Revisar si `result.key` contiene la información correcta
+                        if (!result || !result.key) {
+                            throw new Error('Error obtaining key from uploadData result.');
+                        }
+
+                        const bucketBaseUrl = "https://worklinkerd500aa700a28476bb7438a0dbef726b3222139-prod.s3.amazonaws.com/public/";
+                        const fileUrl = `${bucketBaseUrl}${result.key}`;
+
+                        setUploadMessage('Model uploaded to S3 successfully');
+
+                        // Guardar la URL en DataStore bajo el campo `ModelUrl`
+                        await DataStore.save(
+                            new Modelos({
+                                ModelUrl: fileUrl,
+                            })
+                        );
+                        console.log('Model URL:', fileUrl);
+                    } catch (error) {
+                        console.error('Error uploading model to S3:', error);
+                        setUploadMessage('Error uploading model to S3');
+                    }
+                } else {
+                    console.error('Error fetching model from backend:', response.statusText);
+                    setUploadMessage('Error fetching model from backend');
+                }
+            } catch (error) {
+                console.error('Error fetching model:', error);
+                setUploadMessage('Error fetching model from backend');
+            }
         }
     };
 
@@ -121,6 +167,7 @@ function TestForm() {
                 <div>
                     <button onClick={handleDownloadPDF}>Download PDF</button>
                     <button onClick={handleDownloadExcel}>Download Excel</button>
+                    <button onClick={handleUploadToS3}>Upload Model to S3</button>
                 </div>
             )}
         </div>
