@@ -20,7 +20,13 @@ const Home = () => {
           </div>
         </div>
         <button onClick={() => window.location.href = '/encuesta'} className="text-white back-main px-[75px] py-[15px] mt-10 rounded-full text-[25px] hover:bg-purple-700 active:bg-purple-700 transition-all">
-          Iniciar Test
+          Probar modelo
+        </button>
+        <button onClick={() => window.location.href = '/encuesta'} className="text-white back-main px-[75px] py-[15px] mt-10 rounded-full text-[25px] hover:bg-purple-700 active:bg-purple-700 transition-all">
+          Entrenar modelo
+        </button>
+        <button onClick={() => window.location.href = '/encuesta'} className="text-white back-main px-[75px] py-[15px] mt-10 rounded-full text-[25px] hover:bg-purple-700 active:bg-purple-700 transition-all">
+          Ver dataSet
         </button>
       </div>
     </div>

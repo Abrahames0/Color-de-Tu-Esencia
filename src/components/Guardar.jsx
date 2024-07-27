@@ -80,7 +80,7 @@ function GuardarData({ answers, handleReset }) {
 
     return (
         <div>
-            <p className="text-xl font-semibold">Todas los preguntas completados</p>
+            <p className="text-xl font-semibold">Todas los preguntas completadas</p>
             <button onClick={handleSaveResults} className="mt-4 px-4 py-2 back-main rounded-full hover:bg-indigo-400 active:bg-indigo-500 transition-all">Enviar Resultados</button><br/>
             <button onClick={handleReset} className="mt-4 px-4 py-2 back-main rounded-full hover:bg-indigo-400 active:bg-indigo-500 transition-all">Reiniciar</button>
         </div>

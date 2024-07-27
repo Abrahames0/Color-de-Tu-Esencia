@@ -7,6 +7,16 @@ import { MdOutlineWbSunny, } from 'react-icons/md';
 import { FaMoon } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 
+const navigation = [
+  { name: 'Probar metodo', href: '#', current: false },
+  { name: 'Entrenar modelo', href: '/encuesta', current: false },
+  { name: 'Ver DataSet', href: '#', current: false }
+];
+
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ');
+}
+
 export default function Navbar({ toggleDarkMode, darkMode }) {
   return (
     <Disclosure as="nav" className="bg-customColor z-100">
@@ -33,6 +43,19 @@ export default function Navbar({ toggleDarkMode, darkMode }) {
             </div>
             <div className="hidden sm:ml-6 sm:block relative w-full">
               <div className="flex justify-end space-x-4">
+              {navigation.map((item) => (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    aria-current={item.current ? 'page' : undefined}
+                    className={classNames(
+                      item.current ? 'bg-gray-950 text-white' : 'text-gray-950 hover:bg-gray-500 hover:text-white',
+                      'rounded-md px-3 py-2 text-sm font-medium',
+                    )}
+                  >
+                    {item.name}
+                  </a>
+                ))}
                 <li className="list-none mx-5 hover:border-b-4 border-indigo-800 cursor-pointer p-2 transition-all">
                   <button onClick={toggleDarkMode} className="text-center justify-center flex">
                     {darkMode ? <FaMoon size={25} /> : <MdOutlineWbSunny size={25} />}
@@ -46,6 +69,20 @@ export default function Navbar({ toggleDarkMode, darkMode }) {
 
       <DisclosurePanel className="sm:hidden flex flex-col items-center">
         <div className="space-y-1 px-2 pb-3 pt-2">
+        {navigation.map((item) => (
+            <DisclosureButton
+              key={item.name}
+              as="a"
+              href={item.href}
+              aria-current={item.current ? 'page' : undefined}
+              className={classNames(
+                item.current ? 'bg-gray-950 text-white' : 'text-gray-950 hover:bg-gray-700 hover:text-white',
+                'block rounded-md px-3 py-2 text-base font-medium text-center'
+              )}
+            >
+              {item.name}
+            </DisclosureButton>
+          ))}
           <li className="list-none mx-5 hover:border-b-4 border-indigo-600 cursor-pointer p-2 transition-all flex justify-center">
             <button onClick={toggleDarkMode} className="text-center flex items-center justify-center">
               {darkMode ? <FaMoon size={25} /> : <MdOutlineWbSunny size={25} />}
