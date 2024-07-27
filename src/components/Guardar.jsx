@@ -79,12 +79,21 @@ function GuardarData({ answers, handleReset }) {
     };
 
     return (
-        <div>
-            <p className="text-xl font-semibold">Todas los preguntas completados</p>
-            <button onClick={handleSaveResults} className="mt-4 px-4 py-2 back-main rounded-full hover:bg-indigo-400 active:bg-indigo-500 transition-all">Enviar Resultados</button><br/>
-            <button onClick={handleReset} className="mt-4 px-4 py-2 back-main rounded-full hover:bg-indigo-400 active:bg-indigo-500 transition-all">Reiniciar</button>
+        <div className="flex flex-col mb-4">
+            <div className="flex-grow">
+            <p className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                Todas las preguntas completadas
+            </p>
+            <button onClick={handleSaveResults} className="mt-4 px-4 py-2 mb-2 text-white back-main rounded-full hover:bg-indigo-500 active:bg-indigo-600 transition-all">
+                Enviar Resultados
+            </button>
+            <br />
+            <button onClick={handleReset} className="mt-4 px-4 py-2 mb-5 bg-red-500 text-white rounded-full hover:bg-red-500 active:bg-red-700 transition-all">
+                Reiniciar
+            </button>
+            </div>
         </div>
-    );
+      );
 }
 
 export default GuardarData;

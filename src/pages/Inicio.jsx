@@ -10,13 +10,13 @@ function MainContent() {
   const { darkMode, toggleDarkMode } = useDarkMode();
 
   return (
-    <div className="relative">
+    <div className="relative flex flex-col min-h-screen">
       <BackGradients />
       <Navbar toggleDarkMode={toggleDarkMode} darkMode={darkMode} />
-      <main className="dark:bg-gray-900 dark:text-white">
+      <main className="flex-grow dark:bg-gray-900 dark:text-white">
         <Home />
       </main>
-      <Footer /> 
+      <Footer className="mt-auto mb-4"/>
     </div>
   );
 }
