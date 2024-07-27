@@ -10,6 +10,17 @@
       "StackName": "amplify-elcolordetuesencia-prod-d37a0",
       "StackId": "arn:aws:cloudformation:us-east-1:388211918476:stack/amplify-elcolordetuesencia-prod-d37a0/edc55270-458a-11ef-97b3-1271dc0be93b",
       "AmplifyAppId": "drscmnhjego5l"
+    },
+    "categories": {
+      "auth": {
+        "Elcolordetuesencia": {}
+      },
+      "storage": {
+        "elcolordetuesencia6bfb13e2": {
+          "bucketName": "worklinkerd500aa700a28476bb7438a0dbef726b3222139-prod",
+          "region": "us-east-1"
+        }
+      }
     }
   }
 }
