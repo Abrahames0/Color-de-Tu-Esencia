@@ -1,108 +1,128 @@
 import React, { useState } from 'react';
-import { postTestData, trainModel, uploadFile, testKMeans } from '../service/ApiService';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import * as XLSX from 'xlsx';
 
 function TestForm() {
-    const [inputData, setInputData] = useState({});
     const [file, setFile] = useState(null);
-    const [iterations, setIterations] = useState(50);
-    const [numClusters, setNumClusters] = useState(3);
-    const [cluster, setCluster] = useState(null);
-    const [message, setMessage] = useState('');
+    const [kMax, setKMax] = useState(10);
+    const [elbowImage, setElbowImage] = useState('');
+    const [pcaImage, setPcaImage] = useState('');
     const [uploadMessage, setUploadMessage] = useState('');
-    const [testMessage, setTestMessage] = useState('');
+    const [clusteredData, setClusteredData] = useState([]);
 
-    const handleUpload = async (event) => {
+    const handleFileChange = (event) => {
+        setFile(event.target.files[0]);
+    };
+
+    const handleKMaxChange = (event) => {
+        setKMax(event.target.value);
+    };
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
         if (!file) {
-            setUploadMessage('Please select a file to upload.');
+            setUploadMessage('No file selected');
             return;
         }
-        const result = await uploadFile(file);
-        setUploadMessage(result.message);
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('k_max', kMax);
+
+        try {
+            const response = await fetch('http://127.0.0.1:5000/test-k', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                setUploadMessage(errorData.error);
+                return;
+            }
+
+            const data = await response.json();
+            setElbowImage(data.elbow);
+            setPcaImage(data.pca);
+            setClusteredData(data.clustered_data); // Receives clustered data
+            setUploadMessage('File uploaded and processed successfully');
+        } catch (error) {
+            console.error('Error uploading file:', error);
+            setUploadMessage('Error uploading file');
+        }
     };
 
-    const handleTrain = async (event) => {
-        event.preventDefault();
-        const result = await trainModel({ iterations, numClusters });
-        setMessage(result.message);
+    const handleDownloadPDF = () => {
+        const doc = new jsPDF('portrait'); // Start with portrait orientation
+        doc.text('Cluster Analysis Report', 10, 10);
+        doc.addImage(elbowImage, 'PNG', 10, 20, 180, 100); // Add elbow image
+        doc.addImage(pcaImage, 'PNG', 10, 130, 180, 100); // Add PCA image
+
+        // New page for the table in landscape orientation
+        doc.addPage('landscape');
+
+        if (clusteredData.length > 0) {
+            const headers = Object.keys(clusteredData[0]);
+            const data = clusteredData.map(row => Object.values(row));
+
+            doc.autoTable({
+                head: [headers],
+                body: data,
+                startY: 20,
+                theme: 'grid',
+                headStyles: { fillColor: [0, 0, 0] },
+                styles: { fontSize: 8, cellPadding: 1 }, // Smaller font and reduced padding
+                columnStyles: {
+                    0: { cellWidth: 'wrap' }, // Adjust the width for the first column
+                    // Add more column styles as needed
+                },
+                margin: { top: 20, right: 10, bottom: 20, left: 10 },
+                tableWidth: 'wrap',
+            });
+        }
+
+        doc.save('Cluster_Report.pdf');
     };
 
-    const handleTestKMeans = async (event) => {
-        event.preventDefault();
-        const result = await testKMeans({ numClusters });
-        setTestMessage(result.message);
-    };
-
-    const handleTest = async (event) => {
-        event.preventDefault();
-        const result = await postTestData(inputData);
-        setCluster(result.cluster);
-    };
-
-    const handleChange = (event) => {
-        switch (event.target.name) {
-            case "iterations":
-                setIterations(event.target.value);
-                break;
-            case "numClusters":
-                setNumClusters(event.target.value);
-                break;
-            case "feature1":
-                setInputData({ ...inputData, [event.target.name]: event.target.value });
-                break;
-            case "file":
-                setFile(event.target.files[0]);
-                break;
-            default:
-                break;
+    const handleDownloadExcel = () => {
+        if (clusteredData.length > 0) {
+            // Convert data to a worksheet
+            const ws = XLSX.utils.json_to_sheet(clusteredData);
+            // Create a new workbook and append the worksheet
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Clusters');
+            // Generate Excel file and trigger download
+            XLSX.writeFile(wb, 'Cluster_Data.xlsx');
         }
     };
 
     return (
         <div>
-            <form onSubmit={handleUpload} style={{ marginBottom: '20px' }}>
-                <input type="file" onChange={handleChange} style={{ margin: '10px' }} />
-                <button type="submit" style={{ padding: '10px' }}>Upload CSV</button>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label>
+                        Select file:
+                        <input type="file" onChange={handleFileChange} />
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        Max K:
+                        <input type="number" value={kMax} onChange={handleKMaxChange} />
+                    </label>
+                </div>
+                <button type="submit">Upload and Test</button>
             </form>
             {uploadMessage && <p>{uploadMessage}</p>}
-
-            <form onSubmit={handleTestKMeans} style={{ marginBottom: '20px' }}>
-                <label htmlFor="numClusters">Number of Clusters (k):</label>
-                <input
-                    type="number"
-                    name="numClusters"
-                    value={numClusters}
-                    onChange={handleChange}
-                    style={{ margin: '10px' }}
-                />
-                <button type="submit" style={{ padding: '10px' }}>Test k Value</button>
-            </form>
-            {testMessage && <p>{testMessage}</p>}
-
-            <form onSubmit={handleTrain} style={{ marginBottom: '20px' }}>
-                <label htmlFor="iterations">Iterations:</label>
-                <input
-                    type="number"
-                    name="iterations"
-                    value={iterations}
-                    onChange={handleChange}
-                    style={{ margin: '10px' }}
-                />
-                <button type="submit" style={{ padding: '10px' }}>Train Model</button>
-            </form>
-            {message && <p>{message}</p>}
-
-            <form onSubmit={handleTest}>
-                <label htmlFor="feature1">Feature Input:</label>
-                <input
-                    type="number"
-                    name="feature1"
-                    onChange={handleChange}
-                    style={{ margin: '10px' }}
-                />
-                <button type="submit" style={{ padding: '10px' }}>Test Model</button>
-            </form>
-            {cluster !== null && <p>Cluster: {cluster}</p>}
+            {elbowImage && <img src={`data:image/png;base64,${elbowImage}`} alt="Elbow Method" />}
+            {pcaImage && <img src={`data:image/png;base64,${pcaImage}`} alt="PCA Plot" />}
+            {clusteredData.length > 0 && (
+                <div>
+                    <button onClick={handleDownloadPDF}>Download PDF</button>
+                    <button onClick={handleDownloadExcel}>Download Excel</button>
+                </div>
+            )}
         </div>
     );
 }
