@@ -2,8 +2,6 @@ import React from 'react';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import Logo from "../assets/img/Logo.png";
 import { FaBars, FaRegCircleXmark } from "react-icons/fa6";
-import { MdOutlineWbSunny, } from 'react-icons/md';
-import { FaMoon } from "react-icons/fa";
 import { Link, useLocation } from 'react-router-dom';
 
 const navigation = [
@@ -16,7 +14,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function Nadvar({ toggleDarkMode, darkMode }) {
+export default function NadvarModelos() {
   const location = useLocation();
 
   return (
@@ -52,7 +50,7 @@ export default function Nadvar({ toggleDarkMode, darkMode }) {
                       to={item.href}
                       aria-current={isCurrent ? 'page' : undefined}
                       className={classNames(
-                        isCurrent ? 'bg-slate-500 text-white' : 'text-gray-950 hover:bg-slate-500 hover:text-white',
+                        isCurrent ? 'bg-slate-500 text-white' : 'text-gray-700 hover:bg-slate-500 hover:text-white',
                         'rounded-md px-3 py-2 text-sm font-medium'
                       )}
                     >
@@ -61,9 +59,6 @@ export default function Nadvar({ toggleDarkMode, darkMode }) {
                   );
                 })}
                 <li className="list-none mx-5 hover:border-b-4 border-indigo-800 cursor-pointer p-2 transition-all">
-                  <button onClick={toggleDarkMode} className="text-center justify-center flex">
-                    {darkMode ? <FaMoon size={25} /> : <MdOutlineWbSunny size={25} />}
-                  </button>
                 </li>
               </div>
             </div>
@@ -91,9 +86,6 @@ export default function Nadvar({ toggleDarkMode, darkMode }) {
             );
           })}
           <li className="list-none mx-5 hover:border-b-4 border-indigo-600 cursor-pointer p-2 transition-all flex justify-center">
-            <button onClick={toggleDarkMode} className="text-center flex items-center justify-center">
-              {darkMode ? <FaMoon size={25} /> : <MdOutlineWbSunny size={25} />}
-            </button>
           </li>
         </div>
       </DisclosurePanel>

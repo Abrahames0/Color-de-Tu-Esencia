@@ -1,3 +1,8 @@
+type Modelos @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  Modelurl: String
+}
+
 type Preguntas @model @auth(rules: [{allow: public}]) {
   id: ID!
   motivacion: Int
@@ -15,4 +20,5 @@ type Preguntas @model @auth(rules: [{allow: public}]) {
   reflexion: Int
   comunicacion: Int
   creatividad: Int
-} 
+}
+ 

@@ -12,7 +12,9 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Inicio from "./pages/Inicio";
 import Encuesta from "./pages/Encuesta";
 import Resultado from "./pages/Resultado";
-import TestForm from "./pages/TestForm";
+import ProbarModelo from "./pages/ProbarModelo";
+import TermsConditions from "./components/TermsConditions";
+import PrivacyPolicy from "./components/PrivacyPolicy";
 
 Amplify.configure(awsExports);
 
@@ -30,8 +32,16 @@ const router = createBrowserRouter([
     element: <Resultado/>
   },
   {
-    path: "/test",
-    element: <TestForm/>
+    path: "/test-modelo",
+    element: <ProbarModelo/>
+  },
+  {
+    path: "/privacy-policy",
+    element: <PrivacyPolicy/>
+  },
+  {
+    path: "/terms-conditions",
+    element: <TermsConditions/>
   }
 ]);
 

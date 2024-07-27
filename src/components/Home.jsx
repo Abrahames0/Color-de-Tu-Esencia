@@ -19,15 +19,17 @@ const Home = () => {
             </div>
           </div>
         </div>
-        <button onClick={() => window.location.href = '/encuesta'} className="text-white back-main px-[75px] py-[15px] mt-10 rounded-full text-[25px] hover:bg-purple-700 active:bg-purple-700 transition-all">
-          Probar modelo
-        </button>
-        <button onClick={() => window.location.href = '/encuesta'} className="text-white back-main px-[75px] py-[15px] mt-10 rounded-full text-[25px] hover:bg-purple-700 active:bg-purple-700 transition-all">
-          Entrenar modelo
-        </button>
-        <button onClick={() => window.location.href = '/encuesta'} className="text-white back-main px-[75px] py-[15px] mt-10 rounded-full text-[25px] hover:bg-purple-700 active:bg-purple-700 transition-all">
-          Ver dataSet
-        </button>
+        <div className='space-x-2 space-y-2 justify-center md:justify-start'>
+          <button onClick={() => window.location.href = '/test-modelo'} className="text-white back-main px-[75px] py-[15px] mt-10 rounded-full text-[20px] hover:bg-purple-700 active:bg-purple-700 transition-all">
+            Probar modelo
+          </button>
+          <button onClick={() => window.location.href = '/encuesta'} className="text-white back-main px-[75px] py-[15px] mt-10 rounded-full text-[20px] hover:bg-purple-700 active:bg-purple-700 transition-all">
+            Entrenar modelo
+          </button>
+          <button onClick={() => window.location.href = '/dataset'} className="text-white back-main px-[75px] py-[15px] mt-10 rounded-full text-[20px] hover:bg-purple-700 active:bg-purple-700 transition-all">
+            Ver DataSet
+          </button>
+        </div>
       </div>
     </div>
   )
