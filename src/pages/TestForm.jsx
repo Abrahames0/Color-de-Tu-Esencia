@@ -5,6 +5,7 @@ import * as XLSX from 'xlsx';
 import { uploadData } from 'aws-amplify/storage'; // Asegúrate de que aws-amplify esté correctamente configurado
 import { DataStore } from '@aws-amplify/datastore';
 import { Modelos } from '../models';
+import { signIn } from 'aws-amplify/auth'; // Asegúrate de que signIn esté disponible de esta forma
 
 function TestForm() {
     const [file, setFile] = useState(null);
@@ -13,8 +14,8 @@ function TestForm() {
     const [pcaImage, setPcaImage] = useState('');
     const [uploadMessage, setUploadMessage] = useState('');
     const [clusteredData, setClusteredData] = useState([]);
-    const [modelUrl, setModelUrl] = useState('');
     const [modelFilename, setModelFilename] = useState('');
+
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
     };
@@ -42,16 +43,20 @@ function TestForm() {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                setUploadMessage(errorData.error);
+                setUploadMessage(errorData.error || 'Error processing file');
                 return;
             }
 
             const data = await response.json();
             setElbowImage(data.elbow);
             setPcaImage(data.pca);
-            setClusteredData(data.clustered_data); 
-            setModelUrl(data.model_url); // Usando `model_url` para la URL del modelo
-            setUploadMessage('File uploaded and processed successfully');
+            setClusteredData(data.clustered_data);
+            if (data.model_filename) {
+                setModelFilename(data.model_filename);
+                setUploadMessage('File uploaded and processed successfully');
+            } else {
+                setUploadMessage('Model filename is not defined in response');
+            }
         } catch (error) {
             console.error('Error uploading file:', error);
             setUploadMessage('Error uploading file');
@@ -96,50 +101,74 @@ function TestForm() {
         }
     };
 
+    const handleSignInAndUpload = async () => {
+        try {
+            const { isSignedIn, nextStep } = await signIn({ username: 'abtaham0212@gmail.com', password: 'Linux123!!' });
+            if (isSignedIn) {
+                console.log('User signed in successfully');
+                handleUploadToS3();
+            } else if (nextStep === 'CONFIRM_SIGN_IN_WITH_NEW_PASSWORD_REQUIRED') {
+                console.log('New password required');
+                // Implement logic for handling new password requirement
+            }
+        } catch (error) {
+            console.error('Error signing in:', error);
+            setUploadMessage('Error signing in');
+        }
+    };
+
     const handleUploadToS3 = async () => {
         if (modelFilename) {
+            console.log('Attempting to fetch model from backend...');
             try {
                 const response = await fetch(`http://127.0.0.1:5000/send_model?model_filename=${modelFilename}`);
                 if (response.ok) {
+                    console.log('Model fetched successfully. Processing file...');
                     const blob = await response.blob();
+                    console.log('Blob received:', blob);
+
                     const filename = modelFilename.split('/').pop();
+                    console.log('Uploading model to S3 with filename:', filename);
 
                     try {
                         const result = await uploadData({
                             key: filename,
-                            data: blob
+                            data: blob,
+                            level: 'public',
+                            contentType: 'application/octet-stream'
                         });
-                        console.log('Succeeded: ', result);
 
-                        // Revisar si `result.key` contiene la información correcta
-                        if (!result || !result.key) {
-                            throw new Error('Error obtaining key from uploadData result.');
+                        if (result) {
+                            console.log('Succeeded: ', result);
+                            const fileUrl = `https://worklinkerd500aa700a28476bb7438a0dbef726b3222139-prod.s3.amazonaws.com/public/${filename}`;
+                            console.log('File URL:', fileUrl);
+
+                            console.log('Saving model URL to DataStore...');
+                            await DataStore.save(
+                                new Modelos({
+                                    Modelurl: fileUrl,
+                                })
+                            );
+                            setUploadMessage('Model uploaded to S3 and saved to DataStore successfully');
+                        } else {
+                            console.error('Failed to upload model to S3');
+                            setUploadMessage('Error uploading model to S3');
                         }
-
-                        const bucketBaseUrl = "https://worklinkerd500aa700a28476bb7438a0dbef726b3222139-prod.s3.amazonaws.com/public/";
-                        const fileUrl = `${bucketBaseUrl}${result.key}`;
-
-                        setUploadMessage('Model uploaded to S3 successfully');
-
-                        // Guardar la URL en DataStore bajo el campo `ModelUrl`
-                        await DataStore.save(
-                            new Modelos({
-                                ModelUrl: fileUrl,
-                            })
-                        );
-                        console.log('Model URL:', fileUrl);
                     } catch (error) {
-                        console.error('Error uploading model to S3:', error);
-                        setUploadMessage('Error uploading model to S3');
+                        console.error('Error uploading to S3:', error);
+                        setUploadMessage(`Error uploading to S3: ${error.message}`);
                     }
                 } else {
                     console.error('Error fetching model from backend:', response.statusText);
-                    setUploadMessage('Error fetching model from backend');
+                    setUploadMessage(`Error fetching model from backend: ${response.statusText}`);
                 }
             } catch (error) {
-                console.error('Error fetching model:', error);
-                setUploadMessage('Error fetching model from backend');
+                console.error('Error during upload process:', error);
+                setUploadMessage(`Error during upload process: ${error.message}`);
             }
+        } else {
+            console.error('Model filename is not defined');
+            setUploadMessage('Model filename is not defined');
         }
     };
 
@@ -167,7 +196,7 @@ function TestForm() {
                 <div>
                     <button onClick={handleDownloadPDF}>Download PDF</button>
                     <button onClick={handleDownloadExcel}>Download Excel</button>
-                    <button onClick={handleUploadToS3}>Upload Model to S3</button>
+                    <button onClick={handleSignInAndUpload} style={{ backgroundColor: "red" }}>Sign In and Upload Model to S3</button>
                 </div>
             )}
         </div>
