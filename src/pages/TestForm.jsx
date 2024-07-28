@@ -9,64 +9,94 @@ import { DataStore } from "@aws-amplify/datastore";
 import { Modelos } from "../models";
 import { BiSolidArchiveOut } from "react-icons/bi";
 
+import { signIn } from 'aws-amplify/auth';
+
+
 function TestForm() {
   const [file, setFile] = useState(null);
   const [kMax, setKMax] = useState(10);
-  const [elbowImage, setElbowImage] = useState("");
-  const [pcaImage, setPcaImage] = useState("");
-  const [uploadMessage, setUploadMessage] = useState("");
+  const [elbowImage, setElbowImage] = useState('');
+  const [pcaImage, setPcaImage] = useState('');
+  const [uploadMessage, setUploadMessage] = useState('');
   const [clusteredData, setClusteredData] = useState([]);
-  const [modelUrl, setModelUrl] = useState("");
-  const [modelFilename, setModelFilename] = useState("");
+  const [filename, setFilename] = useState('');
+  const [modelFilename, setModelFilename] = useState('');
   const [loading, setLoading] = useState(false);
 
+
   const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
+      setFile(event.target.files[0]);
   };
 
   const handleKMaxChange = (event) => {
-    setKMax(event.target.value);
+      setKMax(event.target.value);
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (!file) {
-      setUploadMessage("No hay un archivo selecionado");
-      return;
-    }
-
-    setLoading(true); //Start loading
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("k_max", kMax);
-
-    try {
-      const response = await fetch("http://127.0.0.1:5000/test-k", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        setUploadMessage(errorData.error);
-        setLoading(false);
-        return;
+      event.preventDefault();
+      if (!file) {
+          setUploadMessage('No file selected');
+          return;
       }
 
-      const data = await response.json();
-      setElbowImage(data.elbow);
-      setPcaImage(data.pca);
-      setClusteredData(data.clustered_data);
-      setModelUrl(data.model_url); // Usando `model_url` para la URL del modelo
-      setUploadMessage("Archivo cargado y procesado exitosamente");
-    } catch (error) {
-      console.error("Error al cargar el archivo:", error);
-      setUploadMessage("Error al cargar el archivo");
-    } finally {
-        setLoading(false);
-    }
-  };
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('k_max', kMax);
 
+      try {
+          const response = await fetch('http://127.0.0.1:5000/test-k', {
+              method: 'POST',
+              body: formData
+          });
+
+          if (!response.ok) {
+              const errorData = await response.json();
+              setUploadMessage(errorData.error || 'Error processing file');
+              return;
+          }
+
+          const data = await response.json();
+          setElbowImage(data.elbow);
+          setPcaImage(data.pca);
+          setClusteredData(data.clustered_data);
+          setFilename(data.filename);
+          setUploadMessage('File processed successfully');
+      } catch (error) {
+          console.error('Error uploading file:', error);
+          setUploadMessage('Error uploading file');
+      }
+  };
+  const handleTrainModel = async () => {
+    try {
+        const formData = new FormData();
+        formData.append('filename', filename);
+        formData.append('k_max', kMax);
+
+        const response = await fetch('http://127.0.0.1:5000/train-model', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            setUploadMessage(errorData.error || 'Error training model');
+            return;
+        }
+
+        const data = await response.json();
+        console.log('Received data from backend:', data); // Log para verificar la respuesta
+        if (data.model_filename) {
+            setModelFilename(data.model_filename);
+            setUploadMessage('Model trained and saved successfully');
+        } else {
+            console.error('Model filename is not defined in response');
+            setUploadMessage('Model filename is not defined in response');
+        }
+    } catch (error) {
+        console.error('Error training model:', error);
+        setUploadMessage('Error training model');
+    }
+};
   const handleDownloadPDF = () => {
     const doc = new jsPDF("portrait"); // Comienza con orientación vertical
 
@@ -122,61 +152,76 @@ function TestForm() {
     }
   };
 
-  const handleUploadToS3 = async () => {
-    if (modelFilename) {
-      try {
-        setLoading(true);
-        const response = await fetch(
-          `http://127.0.0.1:5000/send_model?model_filename=${modelFilename}`
-        );
-        if (response.ok) {
-          const blob = await response.blob();
-          const filename = modelFilename.split("/").pop();
-
-          try {
-            const result = await uploadData({
-              key: filename,
-              data: blob,
-            });
-            console.log("Succeeded: ", result);
-
-            // Revisar si `result.key` contiene la información correcta
-            if (!result || !result.key) {
-              throw new Error("Error al obtener la clave del resultado de uploadData.");
-            }
-
-            const bucketBaseUrl =
-              "https://worklinkerd500aa700a28476bb7438a0dbef726b3222139-prod.s3.amazonaws.com/public/";
-            const fileUrl = `${bucketBaseUrl}${result.key}`;
-
-            setUploadMessage("Modelo cargado exitosamente en S3");
-
-            // Guardar la URL en DataStore bajo el campo `ModelUrl`
-            await DataStore.save(
-              new Modelos({
-                ModelUrl: fileUrl,
-              })
-            );
-            console.log("Model URL:", fileUrl);
-          } catch (error) {
-            console.error("Error al cargar el modelo en S3:", error);
-            setUploadMessage("Error al cargar el modelo a S3");
-          }
-        } else {
-          console.error(
-            "Error al recuperar el modelo desde el backend:",
-            response.statusText
-          );
-          setUploadMessage("Error al recuperar el modelo desde el backend");
+  const handleSignInAndUpload = async () => {
+    try {
+        const { isSignedIn, nextStep } = await signIn({ username: 'abtaham0212@gmail.com', password: 'Linux123!!' });
+        if (isSignedIn) {
+            console.log('User signed in successfully');
+            handleUploadToS3();
+        } else if (nextStep === 'CONFIRM_SIGN_IN_WITH_NEW_PASSWORD_REQUIRED') {
+            console.log('New password required');
+            // Implement logic for handling new password requirement
         }
-      } catch (error) {
-        console.error("Error fetching model:", error);
-        setUploadMessage("Error al recuperar el modelo desde el backend");
-      } finally {
-        setLoading(false);
-      }
+    } catch (error) {
+        console.error('Error signing in:', error);
+        setUploadMessage('Error signing in');
     }
-  };
+};
+
+const handleUploadToS3 = async () => {
+    if (modelFilename) {
+        console.log('Attempting to fetch model from backend...');
+        try {
+            const response = await fetch(`http://127.0.0.1:5000/send_model?model_filename=${modelFilename}`);
+            if (response.ok) {
+                console.log('Model fetched successfully. Processing file...');
+                const blob = await response.blob();
+                console.log('Blob received:', blob);
+
+                const filename = modelFilename.split('/').pop();
+                console.log('Uploading model to S3 with filename:', filename);
+
+                try {
+                    const result = await uploadData({
+                        key: filename,
+                        data: blob,
+                        level: 'public',
+                        contentType: 'application/octet-stream'
+                    });
+
+                    if (result) {
+                        console.log('Succeeded: ', result);
+                        const fileUrl = `https://worklinkerd500aa700a28476bb7438a0dbef726b3222139-prod.s3.amazonaws.com/public/${filename}`;
+                        console.log('File URL:', fileUrl);
+
+                        console.log('Saving model URL to DataStore...');
+                        await DataStore.save(
+                            new Modelos({
+                                Modelurl: fileUrl,
+                            })
+                        );
+                        setUploadMessage('Model uploaded to S3 and saved to DataStore successfully');
+                    } else {
+                        console.error('Failed to upload model to S3');
+                        setUploadMessage('Error uploading model to S3');
+                    }
+                } catch (error) {
+                    console.error('Error uploading to S3:', error);
+                    setUploadMessage(`Error uploading to S3: ${error.message}`);
+                }
+            } else {
+                console.error('Error fetching model from backend:', response.statusText);
+                setUploadMessage(`Error fetching model from backend: ${response.statusText}`);
+            }
+        } catch (error) {
+            console.error('Error during upload process:', error);
+            setUploadMessage(`Error during upload process: ${error.message}`);
+        }
+    } else {
+        console.error('Model filename is not defined');
+        setUploadMessage('Model filename is not defined');
+    }
+};
 
   const getAlertSeverity = () => {
     if (uploadMessage.toLowerCase().includes("error")) {
@@ -255,9 +300,17 @@ function TestForm() {
           >
             Descargar Excel
           </button>
+          
           <button
             className="flex-1 py-2 px-4 bg-sky-500 text-white font-semibold rounded-full hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
-            onClick={handleUploadToS3}
+            onClick={handleTrainModel}
+          >
+           Entrenar modelo
+          </button>
+
+          <button
+            className="flex-1 py-2 px-4 bg-sky-500 text-white font-semibold rounded-full hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+            onClick={handleSignInAndUpload}
           >
             Cargar modelo a S3
           </button>
