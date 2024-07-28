@@ -11,6 +11,8 @@ from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
+import time  # Importa la librería time para usar timestamp
+
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning, module='matplotlib')
 
@@ -98,8 +100,9 @@ def probar_modelo(filepath, num_clusters=9, num_iteraciones=50, k_max=10):
     elbow_image = plot_elbow_method(df_escalado, k_max)
     pca_image = visualizar_clusters(df)
 
-    # Guardar el modelo
-    model_filename = os.path.join(app.config['MODEL_FOLDER'], 'kmeans_model.pkl')
+    # Generar un nombre de archivo único utilizando un timestamp
+    timestamp = int(time.time())
+    model_filename = os.path.join(app.config['MODEL_FOLDER'], f'kmeans_model_{timestamp}.pkl')
     joblib.dump(kmeans, model_filename)
 
     # Verificar que el archivo del modelo se guardó correctamente
