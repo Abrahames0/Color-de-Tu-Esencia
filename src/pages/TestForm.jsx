@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import * as XLSX from 'xlsx';
-import { uploadData } from 'aws-amplify/storage'; // Asegúrate de que aws-amplify esté correctamente configurado
+import { uploadData } from 'aws-amplify/storage';
 import { DataStore } from '@aws-amplify/datastore';
 import { Modelos } from '../models';
-import { signIn } from 'aws-amplify/auth'; // Asegúrate de que signIn esté disponible de esta forma
+import { signIn } from 'aws-amplify/auth';
 
 function TestForm() {
     const [file, setFile] = useState(null);
@@ -14,6 +14,7 @@ function TestForm() {
     const [pcaImage, setPcaImage] = useState('');
     const [uploadMessage, setUploadMessage] = useState('');
     const [clusteredData, setClusteredData] = useState([]);
+    const [filename, setFilename] = useState('');
     const [modelFilename, setModelFilename] = useState('');
 
     const handleFileChange = (event) => {
@@ -51,15 +52,43 @@ function TestForm() {
             setElbowImage(data.elbow);
             setPcaImage(data.pca);
             setClusteredData(data.clustered_data);
-            if (data.model_filename) {
-                setModelFilename(data.model_filename);
-                setUploadMessage('File uploaded and processed successfully');
-            } else {
-                setUploadMessage('Model filename is not defined in response');
-            }
+            setFilename(data.filename);
+            setUploadMessage('File processed successfully');
         } catch (error) {
             console.error('Error uploading file:', error);
             setUploadMessage('Error uploading file');
+        }
+    };
+
+    const handleTrainModel = async () => {
+        try {
+            const formData = new FormData();
+            formData.append('filename', filename);
+            formData.append('k_max', kMax);
+
+            const response = await fetch('http://127.0.0.1:5000/train-model', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                setUploadMessage(errorData.error || 'Error training model');
+                return;
+            }
+
+            const data = await response.json();
+            console.log('Received data from backend:', data); // Log para verificar la respuesta
+            if (data.model_filename) {
+                setModelFilename(data.model_filename);
+                setUploadMessage('Model trained and saved successfully');
+            } else {
+                console.error('Model filename is not defined in response');
+                setUploadMessage('Model filename is not defined in response');
+            }
+        } catch (error) {
+            console.error('Error training model:', error);
+            setUploadMessage('Error training model');
         }
     };
 
@@ -196,6 +225,7 @@ function TestForm() {
                 <div>
                     <button onClick={handleDownloadPDF}>Download PDF</button>
                     <button onClick={handleDownloadExcel}>Download Excel</button>
+                    <button onClick={handleTrainModel}>Train Model</button>
                     <button onClick={handleSignInAndUpload} style={{ backgroundColor: "red" }}>Sign In and Upload Model to S3</button>
                 </div>
             )}

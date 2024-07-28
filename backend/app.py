@@ -11,8 +11,7 @@ from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
-import time  # Importa la librería time para usar timestamp
-
+import time
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning, module='matplotlib')
 
@@ -49,10 +48,13 @@ def entrenar_modelo(filepath, num_clusters=9, num_iteraciones=50):
     kmeans.fit(df_escalado)
 
     # Save the scaler and model to disk for future use
-    joblib.dump(scaler, os.path.join(app.config['MODEL_FOLDER'], 'scaler.pkl'))
-    joblib.dump(kmeans, os.path.join(app.config['MODEL_FOLDER'], 'kmeans_model.pkl'))
+    timestamp = int(time.time())
+    scaler_filename = os.path.join(app.config['MODEL_FOLDER'], f'scaler_{timestamp}.pkl')
+    model_filename = os.path.join(app.config['MODEL_FOLDER'], f'kmeans_model_{timestamp}.pkl')
+    joblib.dump(scaler, scaler_filename)
+    joblib.dump(kmeans, model_filename)
 
-    return df, kmeans, scaler
+    return df, kmeans, scaler, model_filename
 
 def plot_elbow_method(data, k_max):
     wcss = []
@@ -100,20 +102,9 @@ def probar_modelo(filepath, num_clusters=9, num_iteraciones=50, k_max=10):
     elbow_image = plot_elbow_method(df_escalado, k_max)
     pca_image = visualizar_clusters(df)
 
-    # Generar un nombre de archivo único utilizando un timestamp
-    timestamp = int(time.time())
-    model_filename = os.path.join(app.config['MODEL_FOLDER'], f'kmeans_model_{timestamp}.pkl')
-    joblib.dump(kmeans, model_filename)
-
-    # Verificar que el archivo del modelo se guardó correctamente
-    if os.path.exists(model_filename):
-        print(f'Model file saved at: {model_filename}')
-    else:
-        print('Error: Model file not saved.')
-
     clustered_data = df.to_dict(orient='records')
 
-    return df, kmeans, scaler, elbow_image, pca_image, clustered_data, model_filename
+    return df, kmeans, scaler, elbow_image, pca_image, clustered_data
 
 @app.route('/test-k', methods=['POST'])
 def test_k():
@@ -128,20 +119,30 @@ def test_k():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
         
-        df, kmeans, scaler, elbow_image, pca_image, clustered_data, model_filename = probar_modelo(filepath, num_clusters=k_max, k_max=k_max)
+        df, kmeans, scaler, elbow_image, pca_image, clustered_data = probar_modelo(filepath, num_clusters=k_max, k_max=k_max)
 
-        # Asegúrate de que model_filename esté correctamente establecido y no sea None
-        if model_filename:
-            return jsonify({
-                'elbow': elbow_image,
-                'pca': pca_image,
-                'clustered_data': clustered_data,
-                'model_filename': os.path.basename(model_filename)
-            })
-        else:
-            return jsonify({'error': 'Model filename is not defined'}), 500
+        return jsonify({
+            'elbow': elbow_image,
+            'pca': pca_image,
+            'clustered_data': clustered_data,
+            'filename': filename
+        })
     else:
         return jsonify({'error': 'Unsupported file format'}), 400
+
+@app.route('/train-model', methods=['POST'])
+def train_model():
+    filename = request.form.get('filename')
+    k_max = int(request.form.get('k_max', 9))
+    if filename:
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        if os.path.exists(filepath):
+            df, kmeans, scaler, model_filename = entrenar_modelo(filepath, num_clusters=k_max)
+            return jsonify({'message': 'Model trained and saved', 'model_filename': os.path.basename(model_filename)})
+        else:
+            return jsonify({'error': 'File not found'}), 404
+    else:
+        return jsonify({'error': 'Filename not provided'}), 400
 
 @app.route('/send_model', methods=['GET'])
 def send_model():
