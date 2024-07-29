@@ -1,26 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import StepperTest from "../components/StepperTest";
 import { DarkModeProvider, useDarkMode } from "../components/DarkModeContext";
 import Footer from "../components/Footers";
 import Navbar from "../components/Nadvar";
-/* import Cofeti from "../components/Cofeti"; */
+import SeleccionaModelo from "../components/SeleccionaModelo";
 
 function MainContent() {
   const { darkMode, toggleDarkMode } = useDarkMode();
+  const [step, setStep] = useState(0); 
+
+  const handleStartTest = () => {
+    setStep(1);
+  };
 
   return (
-    <div className="relative">
-      {/* <div className="absolute inset-0 z-0">
-        <Cofeti />
-      </div> */}
-      <div className="relative z-10">
+    <div className="relative flex flex-col min-h-screen">
+      <div className="flex-grow">
         <Navbar toggleDarkMode={toggleDarkMode} darkMode={darkMode} />
         <main className="dark:bg-gray-900 dark:text-white">
-          <StepperTest />
+        {step === 0 ? (
+        <SeleccionaModelo onStartTest={handleStartTest} />
+      ) : (
+        <StepperTest />
+      )}
         </main>
-        <div className="mb-2">
-          <Footer />
-        </div>
+          <Footer className='mt-auto'/>
       </div>
     </div>
   );

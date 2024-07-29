@@ -114,7 +114,7 @@ function StepperTest() {
       </div>
       {!completed && (
         <div className="flex justify-center space-x-4 mt-2">
-          <button disabled={activeStep === 0} onClick={handleBack} className="px-4 py-2 bg-gray-300 text-gray-700 rounded-full disabled:opacity-50">
+          <button disabled={activeStep === 0} onClick={handleBack} className="px-4 py-2 bg-gray-400 text-gray-700 rounded-full disabled:opacity-10">
             Atrás
           </button>
           <button onClick={handleNext} className="px-4 py-2 text-white back-main rounded-full hover:bg-indigo-400 active:bg-indigo-500 transition-all">
