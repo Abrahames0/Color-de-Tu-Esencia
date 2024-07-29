@@ -155,6 +155,30 @@ def send_model():
         print(f'Error: Model file not found at {full_path}')
         return jsonify({'error': 'Model file not found'}), 404
 
+@app.route('/probar-modelo', methods=['POST'])
+def probar_modelo():
+    data = request.json
+    model_filename = data.get('modelFilename')
+    respuestas = data.get('respuestas')
+
+    if not model_filename or not respuestas:
+        return jsonify({'error': 'Faltan datos'}), 400
+
+    modelo_path = os.path.join(app.config['MODEL_FOLDER'], model_filename)
+
+    if not os.path.exists(modelo_path):
+        return jsonify({'error': 'Modelo no encontrado'}), 404
+
+    modelo = joblib.load(modelo_path)
+
+    respuestas_df = pd.DataFrame([respuestas])
+    prediccion = modelo.predict(respuestas_df)
+    
+    return jsonify({'cluster': prediccion.tolist()})
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
 

@@ -87,3 +87,43 @@ export const testKMeans = async (data) => {
         return { message: 'Test failed' };
     }
 };
+
+
+// Ejemplo de función para enviar datos al backend
+function enviarDatos(modelo,answers) {
+    const modeloSeleccionado = modelo;
+    const respuestas = {
+        motivacion:0,
+        relajacion:0,
+        satisfaccion: 1,
+        aprendizaje: 3,
+        estres: 1,
+        ayuda: 1,
+        seguridad: 3,
+        actividad_fisica: 1,
+        amistad_familia: 3,
+        gratitud: 1,
+        pasatiempos: 1,
+        inspiracion: 1,
+        reflexion: 4,
+        comunicacion: 1,
+        creatividad: 1,
+        total:15
+    };
+  
+    fetch('http://localhost:5000/probar-modelo', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ modelo: modeloSeleccionado, respuestas }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Manejar la respuesta del backend
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }
+  

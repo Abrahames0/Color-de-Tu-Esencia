@@ -4,10 +4,14 @@ import { DataStore } from "aws-amplify/datastore";
 import BackGradients from "./BackGradients";
 import { Alert, Snackbar } from "@mui/material";
 
-function SeleccionaModelo({ onStartTest }) {
+
+
+function SeleccionaModelo({ onStartTest,setModelo  }) {
   const [modelos, setModelos] = useState([]);
   const [selectedModelo, setSelectedModelo] = useState("");
   const [showAlert, setShowAlert] = useState(false);
+
+
 
   useEffect(() => {
     async function fetchModelos() {
@@ -23,7 +27,9 @@ function SeleccionaModelo({ onStartTest }) {
   }, []);
 
   const handleChange = (event) => {
-    setSelectedModelo(event.target.value);
+    const modeloSeleccionado = event.target.value;
+    setSelectedModelo(modeloSeleccionado);
+    setModelo(modeloSeleccionado); // Actualiza el modelo en el componente padre
   };
 
   const getFilenameFromUrl = (url) => {

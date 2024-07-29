@@ -20,6 +20,7 @@ function TestForm() {
   const [filename, setFilename] = useState('');
   const [modelFilename, setModelFilename] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(false);
 
   const handleFileChange = (event) => {
       setFile(event.target.files[0]);
@@ -68,37 +69,7 @@ function TestForm() {
       }
   };
 
-  const handleTrainModel = async () => {
-    try {
-        const formData = new FormData();
-        formData.append('filename', filename);
-        formData.append('k_max', kMax);
 
-        const response = await fetch('http://127.0.0.1:5000/train-model', {
-            method: 'POST',
-            body: formData
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            setUploadMessage(errorData.error || 'Modelo de entrenamiento da errores');
-            return;
-        }
-
-        const data = await response.json();
-        console.log('Received data from backend:', data);
-        if (data.model_filename) {
-            setModelFilename(data.model_filename);
-            setUploadMessage('Modelo entrenado y guardado exitosamente');
-        } else {
-            console.error('El nombre del archivo del modelo no está definido en la respuesta');
-            setUploadMessage('El nombre del archivo del modelo no está definido en la respuesta');
-        }
-    } catch (error) {
-        console.error('Modelo de entrenamiento de errores:', error);
-        setUploadMessage('Modelo de entrenamiento de errores');
-    }
-};
   const handleDownloadPDF = () => {
     const doc = new jsPDF("portrait"); // Comienza con orientación vertical
 
@@ -153,72 +124,114 @@ function TestForm() {
     }
   };
 
-  const handleSignInAndUpload = async () => {
+  const handleTrainModel = async () => {
+    setLoading(true);
     try {
-        const { isSignedIn, nextStep } = await signIn({ username: 'abtaham0212@gmail.com', password: 'Linux123!!' });
-        if (isSignedIn) {
-            console.log('User signed in successfully');
-            handleUploadToS3();
-        } else if (nextStep === 'CONFIRM_SIGN_IN_WITH_NEW_PASSWORD_REQUIRED') {
-            console.log('New password required');
-        }
+      const formData = new FormData();
+      formData.append('filename', filename);
+      formData.append('k_max', kMax);
+
+      const response = await fetch('http://127.0.0.1:5000/train-model', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setUploadMessage(errorData.error || 'Error training model');
+        setLoading(false);
+        return;
+      }
+
+      const data = await response.json();
+      if (data.model_filename) {
+        setModelFilename(data.model_filename);
+        setUploadMessage('Model trained successfully');
+      } else {
+        console.error('Model filename is not defined in response');
+        setUploadMessage('Model filename is not defined in response');
+      }
     } catch (error) {
-        console.error('Error al iniciar sesión:', error);
-        setUploadMessage('Error al iniciar sesión');
+      console.error('Error training model:', error);
+      setUploadMessage('Error training model');
+    } finally {
+      setLoading(false);
     }
-};
+  };
 
-const handleUploadToS3 = async () => {
+  const handleSignInAndUpload = async () => {
+    if (!isSignedIn) {
+      try {
+        const user = await signIn({username: 'abtaham0212@gmail.com', password:'Linux123!!'});
+        setIsSignedIn(true);
+        console.log('User signed in successfully:', user);
+      } catch (error) {
+        console.error('Error signing in:', error);
+        setUploadMessage('Error signing in');
+        return;
+      }
+    }
+
+    // Proceed to upload model to S3
+    if (isSignedIn) {
+      handleUploadToS3();
+    }
+  };
+
+  const handleUploadToS3 = async () => {
     if (modelFilename) {
-        console.log('Intentando recuperar el modelo desde el backend...');
-        try {
-            setLoading(true);
-            const response = await fetch(`http://127.0.0.1:5000/send_model?model_filename=${modelFilename}`);
-            if (response.ok) {
-                const blob = await response.blob();
+      console.log('Attempting to fetch model from backend...');
+      try {
+        const response = await fetch(`http://127.0.0.1:5000/send_model?model_filename=${modelFilename}`);
+        if (response.ok) {
+          console.log('Model fetched successfully. Processing file...');
+          const blob = await response.blob();
+          console.log('Blob received:', blob);
 
-                const filename = modelFilename.split('/').pop();
+          const filename = modelFilename.split('/').pop();
+          console.log('Uploading model to S3 with filename:', filename);
 
-                try {
-                    const result = await uploadData({
-                        key: filename,
-                        data: blob,
-                        level: 'public',
-                        contentType: 'application/octet-stream'
-                    });
+          try {
+            const result = await uploadData({
+              key: filename,
+              data: blob,
+              level: 'public',
+              contentType: 'application/octet-stream'
+            });
 
-                    if (result) {
-                        const fileUrl = `https://worklinkerd500aa700a28476bb7438a0dbef726b3222139-prod.s3.amazonaws.com/public/${filename}`;
+            if (result) {
+              console.log('Succeeded: ', result);
+              const fileUrl = `https://worklinkerd500aa700a28476bb7438a0dbef726b3222139-prod.s3.amazonaws.com/public/${filename}`;
+              console.log('File URL:', fileUrl);
 
-                        await DataStore.save(
-                            new Modelos({
-                                Modelurl: fileUrl,
-                            })
-                        );
-                        setUploadMessage('Modelo cargado en S3 y guardado en DataStore correctamente');
-                    } else {
-                        console.error('No se pudo cargar el modelo en S3');
-                        setUploadMessage('Error al cargar el modelo a S3');
-                    }
-                } catch (error) {
-                    console.error('Error al cargar en S3:', error);
-                    setUploadMessage(`Error al cargar en S3: ${error.message}`);
-                }
+              console.log('Saving model URL to DataStore...');
+              await DataStore.save(
+                new Modelos({
+                  Modelurl: fileUrl,
+                })
+              );
+              setUploadMessage('Model uploaded to S3 and saved to DataStore successfully');
             } else {
-                console.error('Error al recuperar el modelo desde el backend:', response.statusText);
-                setUploadMessage(`Error al recuperar el modelo desde el backend: ${response.statusText}`);
+              console.error('Failed to upload model to S3');
+              setUploadMessage('Error uploading model to S3');
             }
-        } catch (error) {
-            console.error('Error durante el proceso de carga:', error);
-            setUploadMessage(`Error durante el proceso de carga: ${error.message}`);
-        } finally {
-            setLoading(false);
+          } catch (error) {
+            console.error('Error uploading to S3:', error);
+            setUploadMessage(`Error uploading to S3: ${error.message}`);
           }
+        } else {
+          console.error('Error fetching model from backend:', response.statusText);
+          setUploadMessage(`Error fetching model from backend: ${response.statusText}`);
+        }
+      } catch (error) {
+        console.error('Error during upload process:', error);
+        setUploadMessage(`Error during upload process: ${error.message}`);
+      }
     } else {
-        console.error('El nombre del archivo del modelo no está definido');
-        setUploadMessage('El nombre del archivo del modelo no está definido');
+      console.error('Model filename is not defined');
+      setUploadMessage('Model filename is not defined');
     }
-};
+  }
 
   const getAlertSeverity = () => {
     if (uploadMessage.toLowerCase().includes("error","Error")) {
