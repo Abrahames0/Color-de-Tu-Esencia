@@ -16,6 +16,7 @@ import ProbarModelo from "./pages/ProbarModelo";
 import TermsConditions from "./components/TermsConditions";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import Login from "./pages/LoginUsuarios";
+import Dataset from "./pages/dataset";
 
 Amplify.configure(awsExports);
 
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
   {
     path: "/test-modelo",
     element: <ProbarModelo />
+  },
+  {
+    path: "/dataset",
+    element: <Dataset />
   },
   {
     path: "/privacy-policy",
