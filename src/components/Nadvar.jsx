@@ -9,7 +9,7 @@ import { Link, useLocation } from 'react-router-dom';
 const navigation = [
   { name: 'Probar metodo', href: '/test-modelo', current: false },
   { name: 'Entrenar modelo', href: '/encuesta', current: false },
-  { name: 'Ver DataSet', href: '#', current: false }
+  { name: 'Ver DataSet', href: '#', current: false },
 ];
 
 function classNames(...classes) {

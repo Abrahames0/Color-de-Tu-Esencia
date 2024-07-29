@@ -1,12 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-
 import "./index.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
-//AWS AMPLIFY
-import { Amplify } from "aws-amplify";
+
+// AWS AMPLIFY
 import awsExports from './aws-exports';
-//
+import { Amplify } from 'aws-amplify';
+
 import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Inicio from "./pages/Inicio";
@@ -15,33 +15,38 @@ import Resultado from "./pages/Resultado";
 import ProbarModelo from "./pages/ProbarModelo";
 import TermsConditions from "./components/TermsConditions";
 import PrivacyPolicy from "./components/PrivacyPolicy";
+import Login from "./pages/LoginUsuarios";
 
 Amplify.configure(awsExports);
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Inicio/>
+    element: <Inicio />
   },
   {
     path: "/encuesta",
-    element: <Encuesta/>
+    element: <Encuesta />
   },
   {
     path: "/resultado",
-    element: <Resultado/>
+    element: <Resultado />
   },
   {
     path: "/test-modelo",
-    element: <ProbarModelo/>
+    element: <ProbarModelo />
   },
   {
     path: "/privacy-policy",
-    element: <PrivacyPolicy/>
+    element: <PrivacyPolicy />
   },
   {
     path: "/terms-conditions",
-    element: <TermsConditions/>
+    element: <TermsConditions />
+  },
+  {
+    path: "/login",
+    element: <Login Component={Login} pageProps={{}} />
   }
 ]);
 
