@@ -20,6 +20,9 @@
           "bucketName": "worklinkerd500aa700a28476bb7438a0dbef726b3222139-prod",
           "region": "us-east-1"
         }
+      },
+      "api": {
+        "Elcolordetuesencia": {}
       }
     }
   }
