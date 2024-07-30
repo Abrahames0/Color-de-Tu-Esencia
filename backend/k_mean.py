@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import silhouette_score, silhouette_samples
@@ -8,13 +9,21 @@ import os
 NUM_CLUSTERS = 3  # Cambia el número de clusters según tus necesidades
 
 # Ruta al archivo CSV
-CSV_FILE_PATH = 'C:/Users/mar73/OneDrive/Escritorio/TAWERS/backend/pre5.csv'  # Reemplaza con la ruta a tu archivo CSV
+CSV_FILE_PATH = './pre5.csv'  # Reemplaza con la ruta a tu archivo CSV
 
 def validate_columns(df):
     numeric_cols = df.select_dtypes(include=['number']).columns
     if len(numeric_cols) == 0:
         raise ValueError("No numeric columns found in the CSV file.")
     return df[numeric_cols]
+
+def adjust_clusters(df, labels):
+    # Esta función ajusta las etiquetas de los clusters según tus necesidades
+    # Ejemplo: puedes reasignar todas las etiquetas del clúster 0 al clúster 1
+    # labels[labels == 0] = 1
+    # Aquí puedes implementar cualquier lógica de ajuste que necesites
+    # En este ejemplo, solo estoy devolviendo las etiquetas originales
+    return labels
 
 def main():
     try:
@@ -54,18 +63,21 @@ def main():
         kmeans.fit(scaled_data)
         labels = kmeans.labels_
         
+        # Ajusta las etiquetas de los clusters según tus necesidades
+        adjusted_labels = adjust_clusters(df, labels)
+        
         # Calcula métricas de evaluación
         inertia = kmeans.inertia_
-        silhouette_avg = silhouette_score(scaled_data, labels)
-        sample_silhouette_values = silhouette_samples(scaled_data, labels)
+        silhouette_avg = silhouette_score(scaled_data, adjusted_labels)
+        sample_silhouette_values = silhouette_samples(scaled_data, adjusted_labels)
         
         # Calcula el silhouette score promedio por cluster
         cluster_silhouette_scores = {}
         for i in range(n_clusters):
-            cluster_silhouette_scores[i] = sample_silhouette_values[labels == i].mean()
+            cluster_silhouette_scores[i] = sample_silhouette_values[adjusted_labels == i].mean()
 
         # Añade las etiquetas de cluster al DataFrame original
-        df['Cluster'] = labels
+        df['Cluster'] = adjusted_labels
         
         # Devuelve los resultados y métricas
         result = {

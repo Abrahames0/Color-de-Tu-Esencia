@@ -6,6 +6,8 @@ import Navbar from "../components/Nadvar";
 import SeleccionaModelo from "../components/SeleccionaModelo";
 import { Modelos } from "../models";
 import { DataStore } from "aws-amplify/datastore";
+import { mapping, questionMapping } from "../utils/catalogos";
+import { sendModelData } from "../services/sendModelData";
 
 function MainContent() {
   const { darkMode, toggleDarkMode } = useDarkMode();
@@ -14,32 +16,6 @@ function MainContent() {
   const [respuestas, setRespuestas] = useState({});
   const [modeloUrl, setModeloUrl] = useState(null);
   const [cluster, setCluster] = useState(null);
-
-  const mapping = {
-    "Nunca": 0,
-    "Raramente": 1,
-    "A veces": 2,
-    "A menudo": 3,
-    "Siempre": 4
-  };
-
-  const questionMapping = {
-    1: 'motivacion',
-    2: 'relajacion',
-    3: 'satisfaccion',
-    4: 'aprendizaje',
-    5: 'estres',
-    6: 'ayuda',
-    7: 'seguridad',
-    8: 'actividad_fisica',
-    9: 'amistad_familia',
-    10: 'gratitud',
-    11: 'pasatiempos',
-    12: 'inspiracion',
-    13: 'reflexion',
-    14: 'comunicacion',
-    15: 'creatividad'
-  };
 
   useEffect(() => {
     if (modelo) {
@@ -61,9 +37,8 @@ function MainContent() {
     }
   };
 
-  const handleCompleteTest = () => {
+  const handleCompleteTest = async () => {
     console.log("Respuestas antes de enviar:", respuestas);
-
     const prefix = "https://worklinkerd500aa700a28476bb7438a0dbef726b3222139-prod.s3.amazonaws.com/public/";
     let result = null;
 
@@ -74,7 +49,6 @@ function MainContent() {
       console.error("Modelo URL no está disponible.");
       return;
     }
-
     // Aplica el mapeo de texto a valores numéricos y ajusta las claves
     const mappedResponses = {};
     for (const key in respuestas) {
@@ -89,8 +63,6 @@ function MainContent() {
         }
       }
     }
-
-    // Formatea las respuestas en la estructura necesaria
     const formattedResponses = {
       ...mappedResponses,
       total: Object.values(mappedResponses).reduce((sum, val) => sum + val, 0)
@@ -98,23 +70,15 @@ function MainContent() {
 
     console.log("Enviando datos:", { modelFilename: result, respuestas: formattedResponses });
 
-    fetch('http://localhost:5000/probar-modelo', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ modelFilename: result, respuestas: formattedResponses }),
-    })
-    .then(response => response.json())
-    .then(data => {
+    try {
+      const data = await sendModelData(result, formattedResponses);
       console.log("Resultados del modelo:", data);
       if (data.cluster) {
         setCluster(data.cluster);
       }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+    } catch (error) {
+      console.error('Error al enviar los datos:', error);
+    }
   };
 
   return (
