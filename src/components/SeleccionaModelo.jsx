@@ -6,12 +6,10 @@ import { Alert, Snackbar } from "@mui/material";
 
 
 
-function SeleccionaModelo({ onStartTest,setModelo  }) {
+function SeleccionaModelo({ onStartTest, setModelo }) {
   const [modelos, setModelos] = useState([]);
   const [selectedModelo, setSelectedModelo] = useState("");
   const [showAlert, setShowAlert] = useState(false);
-
-
 
   useEffect(() => {
     async function fetchModelos() {
@@ -29,7 +27,7 @@ function SeleccionaModelo({ onStartTest,setModelo  }) {
   const handleChange = (event) => {
     const modeloSeleccionado = event.target.value;
     setSelectedModelo(modeloSeleccionado);
-    setModelo(modeloSeleccionado); // Actualiza el modelo en el componente padre
+    setModelo(modeloSeleccionado); 
   };
 
   const getFilenameFromUrl = (url) => {

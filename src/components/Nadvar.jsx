@@ -8,6 +8,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 const navigation = [
   { name: 'Probar metodo', href: '/test-modelo', current: false },
+  { name: 'Probar DataSet', href: '/test-dataset', current: false },
   { name: 'Entrenar modelo', href: '/encuesta', current: false },
   { name: 'Ver DataSet', href: '/dataset', current: false },
 ];

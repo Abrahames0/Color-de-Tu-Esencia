@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
-import { Alert, CircularProgress, InputAdornment, Snackbar, TextField } from "@mui/material";
+import { Alert, CircularProgress, FormControl, InputAdornment, InputLabel, MenuItem, Select, Snackbar, TextField } from "@mui/material";
 import LogoProyecto from "../assets/img/Logo.png";
 import { uploadData } from "aws-amplify/storage";
 import { DataStore } from "@aws-amplify/datastore";
@@ -10,7 +10,7 @@ import { Modelos } from "../models";
 import { BiSolidArchiveOut } from "react-icons/bi";
 import { signIn } from 'aws-amplify/auth';
 
-function TestForm() {
+function TestDataSet() {
   const [file, setFile] = useState(null);
   const [kMax, setKMax] = useState(10);
   const [elbowImage, setElbowImage] = useState('');
@@ -21,6 +21,31 @@ function TestForm() {
   const [modelFilename, setModelFilename] = useState('');
   const [loading, setLoading] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(false);
+
+  const [modelos, setModelos] = useState([]);
+  const [selectedModelo, setSelectedModelo] = useState("");
+
+  useEffect(() => {
+    async function fetchModelos() {
+      try {
+        const modelosData = await DataStore.query(Modelos);
+        setModelos(modelosData);
+      } catch (error) {
+        console.error("Error fetching modelos:", error);
+      }
+    }
+
+    fetchModelos();
+  }, []);
+
+  const handleChange = (event) => {
+    const modeloSeleccionado = event.target.value;
+    setSelectedModelo(modeloSeleccionado);
+  };
+
+  const getFilenameFromUrl = (url) => {
+    return url.substring(url.lastIndexOf('/') + 1);
+  };
 
   const handleFileChange = (event) => {
       setFile(event.target.files[0]);
@@ -279,6 +304,21 @@ function TestForm() {
             />
           </div>
         </div>
+        <div className="max-w-3xl mx-auto mb-4">
+          <FormControl fullWidth variant="outlined">
+            <InputLabel id="models-label">Seleccione un modelo</InputLabel>
+            <Select labelId="models-label" id="models" value={selectedModelo} onChange={handleChange} label="Seleccione un modelo">
+              <MenuItem value="" disabled>
+                Seleccione un modelo
+              </MenuItem>
+              {modelos.map((modelo) => (
+                <MenuItem key={modelo.id} value={modelo.id}>
+                  {getFilenameFromUrl(modelo.Modelurl)}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
         <button type="submit" className="w-[40%] py-2 px-4 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500" disabled={loading}>
           {loading ? <CircularProgress size={24} color="inherit" /> : "Cargar y probar"}
         </button>
@@ -328,4 +368,4 @@ function TestForm() {
   );
 }
 
-export default TestForm;
+export default TestDataSet;

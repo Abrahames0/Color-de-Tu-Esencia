@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Preguntas } from "../models";
 import { DataStore } from "aws-amplify/datastore";
+import * as XLSX from "xlsx";
 
 const valueMapping = {
   0: "Nunca",
@@ -11,22 +12,22 @@ const valueMapping = {
 };
 
 const tabla = [
-  { name: 'Id'},
-  { name: 'Motivación'},
-  { name: 'Relajacion'},
-  { name: 'Satisfaccion'},
-  { name: 'Aprendizaje'},
-  { name: 'Estres'},
-  { name: 'Ayuda'},
-  { name: 'Seguridad'},
-  { name: 'Actividad Fisica'},
-  { name: 'Amistad/Familia'},
-  { name: 'Gratitud'},
-  { name: 'Pasatiempos'},
-  { name: 'Inspiracion'},
-  { name: 'Reflexion'},
-  { name: 'Comunicacion'},
-  { name: 'Creatividad'},
+  { name: 'Id' },
+  { name: 'Motivación' },
+  { name: 'Relajacion' },
+  { name: 'Satisfaccion' },
+  { name: 'Aprendizaje' },
+  { name: 'Estres' },
+  { name: 'Ayuda' },
+  { name: 'Seguridad' },
+  { name: 'Actividad Fisica' },
+  { name: 'Amistad/Familia' },
+  { name: 'Gratitud' },
+  { name: 'Pasatiempos' },
+  { name: 'Inspiracion' },
+  { name: 'Reflexion' },
+  { name: 'Comunicacion' },
+  { name: 'Creatividad' },
 ];
 
 function TableData() {
@@ -61,6 +62,51 @@ function TableData() {
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const selectedItems = preguntas.slice(startIndex, startIndex + itemsPerPage);
+
+  const handleDownloadExcel = () => {
+    const dataForExcel = preguntas.map(pregunta => {
+      const total =
+        pregunta.motivacion +
+        pregunta.relajacion +
+        pregunta.satisfaccion +
+        pregunta.aprendizaje +
+        pregunta.estres +
+        pregunta.ayuda +
+        pregunta.seguridad +
+        pregunta.actividadFisica +
+        pregunta.amistadFamilia +
+        pregunta.gratitud +
+        pregunta.pasatiempos +
+        pregunta.inspiracion +
+        pregunta.reflexion +
+        pregunta.comunicacion +
+        pregunta.creatividad;
+
+      return {
+        motivacion: pregunta.motivacion,
+        relajacion: pregunta.relajacion,
+        satisfaccion: pregunta.satisfaccion,
+        aprendizaje: pregunta.aprendizaje,
+        estres: pregunta.estres,
+        ayuda: pregunta.ayuda,
+        seguridad: pregunta.seguridad,
+        actividadFisica: pregunta.actividadFisica,
+        amistadFamilia: pregunta.amistadFamilia,
+        gratitud: pregunta.gratitud,
+        pasatiempos: pregunta.pasatiempos,
+        inspiracion: pregunta.inspiracion,
+        reflexion: pregunta.reflexion,
+        comunicacion: pregunta.comunicacion,
+        creatividad: pregunta.creatividad,
+        total
+      };
+    });
+
+    const ws = XLSX.utils.json_to_sheet(dataForExcel);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Preguntas");
+    XLSX.writeFile(wb, "Preguntas_Data.csv");
+  };
 
   return (
     <div>
@@ -102,26 +148,21 @@ function TableData() {
           </tbody>
         </table>
         <div className="flex flex-col items-center mt-4">
-        <span className="text-sm text-gray-700 dark:text-gray-400">
-          Showing <span className="font-semibold text-gray-900 dark:text-white">{startIndex + 1}</span> to <span className="font-semibold text-gray-900 dark:text-white">{Math.min(startIndex + itemsPerPage, preguntas.length)}</span> of <span className="font-semibold text-gray-900 dark:text-white">{preguntas.length}</span> Entries
-        </span>
-        <div className="inline-flex mt-2 xs:mt-0">
-          <button 
-            onClick={handlePrevPage} 
-            disabled={currentPage === 1}
-            className="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-          >
-            Atras
-          </button>
-          <button 
-            onClick={handleNextPage} 
-            disabled={currentPage === Math.ceil(preguntas.length / itemsPerPage)}
-            className="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-          >
-            Siguente
-          </button>
+          <span className="text-sm text-gray-700 dark:text-gray-400">
+            Showing <span className="font-semibold text-gray-900 dark:text-white">{startIndex + 1}</span> to <span className="font-semibold text-gray-900 dark:text-white">{Math.min(startIndex + itemsPerPage, preguntas.length)}</span> of <span className="font-semibold text-gray-900 dark:text-white">{preguntas.length}</span> Entries
+          </span>
+          <div className="inline-flex mt-2 xs:mt-0">
+            <button onClick={handlePrevPage} disabled={currentPage === 1} className="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+              Atras
+            </button>
+            <button onClick={handleNextPage} disabled={currentPage === Math.ceil(preguntas.length / itemsPerPage)} className="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+              Siguente
+            </button>
+            <button onClick={handleDownloadExcel} className="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-green-600 rounded-e hover:bg-green-700">
+              Descargar en Excel
+            </button>
+          </div>
         </div>
-      </div>
       </div>
     </div>
   );

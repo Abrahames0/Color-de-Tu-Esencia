@@ -4,7 +4,7 @@ import Footer from "../components/Footers";
 import Navbar from "../components/Nadvar";
 import BackGradients from "../components/BackGradients";
 import { DarkModeProvider, useDarkMode } from "../components/DarkModeContext";
-import Gracias from "../components/Gracias";
+import ResultadoColor from "../components/ResultadoColor";
 
 function MainContent() {
   const { darkMode, toggleDarkMode } = useDarkMode();
@@ -14,7 +14,7 @@ function MainContent() {
       <BackGradients />
       <Navbar toggleDarkMode={toggleDarkMode} darkMode={darkMode} />
       <main className="dark:bg-gray-900 dark:text-white">
-        <Gracias />
+        <ResultadoColor />
       </main>
       <Footer /> 
     </div>
