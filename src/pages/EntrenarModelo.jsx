@@ -6,7 +6,7 @@ import Navbar from "../components/Nadvar";
 import SeleccionaModelo from "../components/SeleccionaModelo";
 import { Modelos } from "../models";
 import { DataStore } from "aws-amplify/datastore";
-import { mapping, questionMapping } from "../data/catalogos";
+import { mapping, questionMapping } from "../data/catalogos"; 
 import { sendModelData } from '../service/ApiService'; 
 import ResultadoColor from "../components/ResultadoColor";
 
@@ -16,9 +16,16 @@ function MainContent() {
   const [modelo, setModelo] = useState(null);
   const [respuestas, setRespuestas] = useState({});
   const [modeloUrl, setModeloUrl] = useState(null);
-  const [cluster, setCluster] = useState(null);
+  const [color, setColor] = useState(null);
+  const [testCompleted, setTestCompleted] = useState(false);
 
   useEffect(() => {
+    // Recuperar color desde localStorage al cargar el componente
+    const storedColor = localStorage.getItem('testColor');
+    if (storedColor) {
+      setColor(storedColor);
+    }
+
     if (modelo) {
       DataStore.query(Modelos, modelo).then(modeloData => {
         if (modeloData) {
@@ -39,48 +46,63 @@ function MainContent() {
   };
 
   const handleCompleteTest = async () => {
-    console.log("Respuestas antes de enviar:", respuestas);
+    if (testCompleted) return;  
+    setTestCompleted(true);  
+
     const prefix = "https://worklinkerd500aa700a28476bb7438a0dbef726b3222139-prod.s3.amazonaws.com/public/";
     let result = null;
 
     if (modeloUrl) {
       result = modeloUrl.replace(prefix, ""); 
-      console.log("Model filename:", result);
     } else {
       console.error("Modelo URL no está disponible.");
       return;
     }
 
-    // Aplica el mapeo de texto a valores numéricos y ajusta las claves
-    const mappedResponses = {};
-    for (const key in respuestas) {
-      if (respuestas.hasOwnProperty(key)) {
-        const attribute = questionMapping[key];
-        const value = mapping[respuestas[key]];
+    const formattedResponses = {};
+    Object.keys(questionMapping).forEach((key) => {
+      const questionId = parseInt(key, 10);
+      const attribute = questionMapping[questionId];
+      const value = mapping[respuestas[questionId]];
 
-        if (attribute && value !== undefined) {
-          mappedResponses[attribute] = value;
-        } else {
-          console.error(`Error mapeando la clave ${key} o el valor ${respuestas[key]}`);
-        }
+      if (attribute && value !== undefined) {
+        formattedResponses[attribute] = value;
+      } else {
+        console.error(`Error mapeando la clave ${questionId} o el valor ${respuestas[questionId]}`);
       }
-    }
-    const formattedResponses = {
-      ...mappedResponses,
-      total: Object.values(mappedResponses).reduce((sum, val) => sum + val, 0)
+    });
+
+    const dataToSend = {
+      modelFilename: result,
+      respuestas: [formattedResponses]
     };
 
-    console.log("Enviando datos:", { modelFilename: result, respuestas: formattedResponses });
+    console.log("Datos enviados al backend:", dataToSend);
 
     try {
-      const data = await sendModelData(result, formattedResponses);
-      console.log("Resultados del modelo:", data);
-      if (data.cluster) {
-        setCluster(data.cluster);
+      const data = await sendModelData(result, [formattedResponses]);
+      console.log("Respuesta del backend:", data);
+      if (data.color) {
+        console.log("Color recibido del backend:", data.color);
+        setColor(data.color);
+        localStorage.setItem('testColor', data.color); // Guardar color en localStorage
+      } else {
+        console.error("El color no está definido en la respuesta del backend.");
       }
     } catch (error) {
       console.error('Error al enviar los datos:', error);
     }
+  };
+
+  const handleReset = () => {
+    // Limpiar localStorage y reiniciar estado
+    localStorage.removeItem('testColor');
+    setColor(null);
+    setStep(0);
+    setModelo(null);
+    setRespuestas({});
+    setModeloUrl(null);
+    setTestCompleted(false);
   };
 
   return (
@@ -91,13 +113,24 @@ function MainContent() {
           {step === 0 ? (
             <SeleccionaModelo onStartTest={handleStartTest} setModelo={setModelo} />
           ) : (
-            <StepperTest respuestas={respuestas} setRespuestas={setRespuestas} modelo={modelo} onComplete={handleCompleteTest} />
+            <StepperTest
+              respuestas={respuestas}
+              setRespuestas={setRespuestas}
+              modelo={modelo}
+              onTestComplete={handleCompleteTest} // Pasa handleCompleteTest como prop
+            />
           )}
-          {cluster && (
-            <ResultadoColor respuestas={respuestas} cluster={cluster} />
+          {color && (
+            <>
+              {console.log("Propiedad color enviada a ResultadoColor:", color)}
+              <ResultadoColor color={color} onCompleteTest={handleCompleteTest} />
+            </>
           )}
         </main>
         <Footer className='mt-auto'/>
+        <button onClick={handleReset} className="px-4 py-2 text-white bg-red-500 rounded-full hover:bg-red-600">
+          Volver al inicio
+        </button>
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ import { TextField, Typography, Snackbar, Alert } from '@mui/material';
 import { Button, ProgressBar } from 'react-bootstrap';
 import Loader from '../components/Loader'; // Asegúrate de tener un componente Loader
 
-function StepperTest({ respuestas, setRespuestas }) {
+function StepperTest({ respuestas, setRespuestas, onTestComplete  }) {
   const [activeStep, setActiveStep] = useState(0);
   const [showAlert, setShowAlert] = useState(false);
   const [loading, setLoading] = useState(false); // Estado de carga
@@ -28,6 +28,9 @@ function StepperTest({ respuestas, setRespuestas }) {
       await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulación de proceso asincrónico
       setLoading(false); // Termina la carga
       navigate('/resultado');
+      if (onTestComplete) {
+        onTestComplete();
+      }
     }
   };
 
