@@ -23,7 +23,10 @@ const Home = () => {
           <button onClick={() => window.location.href = '/test-modelo'} className="text-white back-main px-[75px] py-[15px] mt-10 rounded-full text-[20px] hover:bg-purple-700 active:bg-purple-700 transition-all">
             Probar modelo
           </button>
-          <button onClick={() => window.location.href = '/encuesta'} className="text-white back-main px-[75px] py-[15px] mt-10 rounded-full text-[20px] hover:bg-purple-700 active:bg-purple-700 transition-all">
+          <button onClick={() => window.location.href = '/test-dataset'} className="text-white back-main px-[75px] py-[15px] mt-10 rounded-full text-[20px] hover:bg-purple-700 active:bg-purple-700 transition-all">
+            Probar DataSet
+          </button>
+          <button onClick={() => window.location.href = '/entrenar-modelo'} className="text-white back-main px-[75px] py-[15px] mt-10 rounded-full text-[20px] hover:bg-purple-700 active:bg-purple-700 transition-all">
             Entrenar modelo
           </button>
           <button onClick={() => window.location.href = '/dataset'} className="text-white back-main px-[75px] py-[15px] mt-10 rounded-full text-[20px] hover:bg-purple-700 active:bg-purple-700 transition-all">

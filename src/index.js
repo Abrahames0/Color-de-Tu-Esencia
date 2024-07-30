@@ -10,7 +10,6 @@ import { Amplify } from 'aws-amplify';
 import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Inicio from "./pages/Inicio";
-import Encuesta from "./pages/Encuesta";
 import Resultado from "./pages/Resultado";
 import ProbarModelo from "./pages/ProbarModelo";
 import TermsConditions from "./components/TermsConditions";
@@ -18,6 +17,8 @@ import PrivacyPolicy from "./components/PrivacyPolicy";
 import Login from "./pages/LoginUsuarios";
 import Dataset from "./pages/dataset";
 import ProbarDataSet from "./pages/ProbarDataSet";
+import Encuesta from "./pages/Encuesta";
+import EntrenarModelo from "./pages/EntrenarModelo";
 
 Amplify.configure(awsExports);
 
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
   {
     path: "/test-dataset",
     element: <ProbarDataSet />
+  },
+  {
+    path: "/entrenar-modelo",
+    element: <EntrenarModelo />
   },
   {
     path: "/dataset",

@@ -4,8 +4,6 @@ import { DataStore } from "aws-amplify/datastore";
 import BackGradients from "./BackGradients";
 import { Alert, Snackbar } from "@mui/material";
 
-
-
 function SeleccionaModelo({ onStartTest, setModelo }) {
   const [modelos, setModelos] = useState([]);
   const [selectedModelo, setSelectedModelo] = useState("");

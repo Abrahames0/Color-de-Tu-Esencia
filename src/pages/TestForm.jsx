@@ -21,6 +21,7 @@ function TestForm() {
   const [modelFilename, setModelFilename] = useState('');
   const [loading, setLoading] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [selectedGraph, setSelectedGraph] = useState('Elbow');
 
   const handleFileChange = (event) => {
       setFile(event.target.files[0]);
@@ -242,6 +243,10 @@ function TestForm() {
     return "info";
   };
 
+  const handleGraphChange = (event) => {
+    setSelectedGraph(event.target.value);
+  };
+
   return (
     <div className="p-2 mb-2 md:mt-20 mobile:mt-40 rounded-lg text-center justify-center items-center">
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -282,13 +287,32 @@ function TestForm() {
         <button type="submit" className="w-[40%] py-2 px-4 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500" disabled={loading}>
           {loading ? <CircularProgress size={24} color="inherit" /> : "Cargar y probar"}
         </button>
+        {(elbowImage || pcaImage) && (
+          <div className="flex justify-center items-center">
+            <div className="text-dark rounded-lg shadow-md w-full max-w-3xl">
+              <div className="border-b border-gray-700 p-4">
+                <p className="text-sm text-dark">Selecciona la gráfica deseada</p>
+                <select
+                  value={selectedGraph}
+                  onChange={handleGraphChange}
+                  className="form-select w-full mt-2 p-2 rounded-md bg-gray-700 text-dark"
+                >
+                  <option value="Elbow">Método del Codo</option>
+                  <option value="PCA">Análisis de Componentes Principales (PCA)</option>
+                </select>
+              </div>
+              <div className="p-4 flex justify-center items-center">
+                {selectedGraph === 'Elbow' && elbowImage && (
+                  <img src={`data:image/png;base64,${elbowImage}`} alt="Elbow Method" className="w-[90%] rounded-md"/>
+                )}
+                {selectedGraph === 'PCA' && pcaImage && (
+                  <img src={`data:image/png;base64,${pcaImage}`} alt="PCA Plot" className="w-[90%] rounded-md"/>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </form>
-      {elbowImage && (
-        <img src={`data:image/png;base64,${elbowImage}`} alt="Elbow Method" className="mt-4 w-[50%] rounded-md"/>
-      )}
-      {pcaImage && (
-        <img src={`data:image/png;base64,${pcaImage}`} alt="PCA Plot" className="mt-4 w-[50%] rounded-md"/>
-      )}
       {clusteredData.length > 0 && (
         <div className="mt-4 flex space-x-2">
           <button

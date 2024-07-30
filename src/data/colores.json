@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "color": "Negro",
+        "descripcion": "Eres una persona de carácter dominante. Sueles ser directx con tus comentarios y eres muy decididx a la hora de tomar decisiones. Para ti no hay medios, a ti te gusta ser clarx desde un inicio. También puedes aburrirte fácilmente.",
+        "imagen": "src/assets/img/colores/Color_negro.jpg",
+        "tipo": ["Sinceridad", "Poder", "Elegancia", "A menudo distante", "Intimidante"]
+    },
+    {
+        "id": 2,
+        "color": "Rojo",
+        "descripcion": "Eres una persona de carácter dominante. Sueles ser directx con tus comentarios y eres muy decididx a la hora de tomar decisiones. Para ti no hay medios, a ti te gusta ser clarx desde un inicio. También puedes aburrirte fácilmente.",
+        "imagen": "src/assets/img/colores/Rojo_color.png",
+        "tipo": ["Energía", "Vitalidad", "Poder", "Fuerza", "Impulso"]
+    },
+    {
+        "id": 3,
+        "color": "Azul",
+        "descripcion": "Eres una persona que refleja calma y serenidad. Tienes un carácter tranquilo y confiable, y eres percibido como alguien que busca la paz y la armonía en las relaciones. Valoras la verdad y la sinceridad, y sueles ser leal y fiel en tus compromisos. Además, eres responsable y confiable, alguien en quien los demás pueden confiar.",
+        "imagen": "src/assets/img/colores/Azul_color.png",
+        "tipo": ["Calma", "Serenidad", "Armonía", "Fidelidad", "Responsabilidad"]
+    },    
+    {
+        "id": 4,
+        "color": "Verde",
+        "descripcion": "Eres una persona leal y tolerante. Al mismo tiempo puedes ser muy pasional y muchas veces indecisa. Habitualmente eres muy sociable, te gusta rodearte de amigxs que te hagan sentir cómodx.",
+        "imagen": "src/assets/img/colores/Color_verde.jpg",
+        "tipo": ["Equilibrio", "Tradicional", "Moderado", "Celos", "Estabilidad"]
+    },
+    {
+        "id": 5,
+        "color": "Blanco",
+        "descripcion": "Eres una persona que refleja pureza y honestidad. Prefieres la claridad y la simplicidad en tu vida, y eres organizado y detallista. A menudo eres visto como pacífico y equilibrado, buscando soluciones armoniosas en los conflictos. Valoras los nuevos comienzos y la renovación, y tienes una disposición abierta hacia nuevas ideas y experiencias.",
+        "imagen": "src/assets/img/colores/Color_Blanco.png",
+        "tipo": ["Pureza", "Claridad", "Paz", "Renovación", "Apertura"]
+    }    
+]
